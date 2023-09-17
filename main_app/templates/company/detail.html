@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1> {{ company.name }}</h1>
+<h3> {{company.industry}} </h3>
+<a href="{{company.url}}" target="_blank" rel="noopener noreferrer"> Link to Company's Job Postings</a>
+<p> {{company.description}} </p>
+
+
+
+<div class="row">
+  
+    <div class="card">
+      <div class="card-content">
+      </div>
+    </div>
+ 
+</div>
+{% endblock %}
