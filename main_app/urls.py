@@ -7,7 +7,9 @@ urlpatterns = [
 	path('subforums/<int:subforum_id>/', views.subforums_detail, name='subforums_detail'),
 	path('subforums/create/', views.SubforumCreate.as_view(), name='subforums_create'),
 	path('subforums/<int:subforum_id>/add_post/', views.add_post, name='add_post'),
+	path('subforums/<int:subforum_id>/post/<int:post_id>/add_comment/', views.add_comment, name='add_comment'),
 	path('companies/', views.CompanyList.as_view(), name='company_index'),
 	path('companies/<int:pk>/', views.CompanyDetail.as_view(), name='company_detail'),
 	path('companies/create/', views.CompanyCreate.as_view(), name='company_create'),
+    path('accounts/signup/', views.signup, name='signup'), 
 ]

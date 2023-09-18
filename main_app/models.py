@@ -10,6 +10,7 @@ class Subforum(models.Model):
     date = models.DateField(auto_now_add=True)
     likes = models.IntegerField(default=0)
     pinned = models.BooleanField(default=False)
+    content = models.TextField(max_length=600)
     user = models.ForeignKey(
         User, 
         on_delete=models.CASCADE
@@ -34,7 +35,7 @@ class Post(models.Model):
     )
   
     def __str__(self):
-        return f'title of this post is {self.title}'
+        return f'the id of this post is {self.id}'
 
     class Meta: 
         ordering = ['-date']
@@ -42,8 +43,10 @@ class Post(models.Model):
 class Photo(models.Model): 
     url = models.CharField(max_length=200)
     post = models.ForeignKey(
-        Post, on_delete=models.CASCADE
+        Subforum, 
+        on_delete=models.CASCADE
         )
+    
 
     def __str__(self):
         return f'Photo for post_id: {self.post_id} @{self.url}'
@@ -53,7 +56,7 @@ class Photo(models.Model):
 class Comment(models.Model): 
     content = models.TextField(max_length=250)
     date = models.DateField(auto_now_add=True)
-    Post = models.ForeignKey(
+    post = models.ForeignKey(
         Post, 
         on_delete=models.CASCADE
     )
@@ -63,7 +66,7 @@ class Comment(models.Model):
     )
 
     def __str__(self):
-        return f'title of this post is {self.title}'
+        return f'comment id: {self.id}'
 
     class Meta: 
         ordering = ['-date']
@@ -87,6 +90,7 @@ class Company_Subforum(models.Model):
     date = models.DateField(auto_now_add=True)
     likes = models.IntegerField(default=0)
     pinned = models.BooleanField(default = False)
+    content = models.TextField(max_length=600)
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE
@@ -97,7 +101,7 @@ class Company_Subforum(models.Model):
     )
 
     def __str__(self): 
-        return f'title of this subforum: {self.title}'
+        return f'title subforum: {self.title}'
     
     def get_absolute_url(self): 
         return reverse('company_subforum_detail', kwargs={'pk': self.id})  #refactor with the correct views reference and variable names 
@@ -115,14 +119,34 @@ class Company_Post(models.Model):
     )
   
     def __str__(self):
-        return f'title of this post is {self.title}'
+        return f'post id: {self.id}'
+
+    class Meta: 
+        ordering = ['-date']
+
+class Company_Comment(models.Model): 
+    content = models.TextField(max_length=250)
+    date = models.DateField(auto_now_add=True)
+    post = models.ForeignKey(
+        Company_Post, 
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE
+    )
+    def __str__(self):
+        return f'comment id: {self.id}'
 
     class Meta: 
         ordering = ['-date']
 
 class Company_Photo(models.Model): 
     url = models.CharField(max_length=200)
-    post = models.ForeignKey(Company_Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(
+        Company_Subforum, 
+        on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return f'Photo for post_id: {self.post_id} @{self.url}'
