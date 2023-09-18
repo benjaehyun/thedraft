@@ -9,11 +9,19 @@ from django.views.generic import ListView, DetailView
 from .models import Subforum, Post, Company
 from .forms import PostForm
 
-def home(request): 
+def subforms_index(request): 
     subforums = Subforum.objects.all()
-    return render(request, 'home.html', {
+    # Redirect? To like subforum/index.html
+    return render(request, 'home.html', { 
         'subforums': subforums
     })
+
+def company_subforms_index(request):
+    company_subforums = CompanySubforum.objects.all()
+    # Where should this live? I picked this one because this file already exists
+    return render(request, 'subforum/index.html', {
+        'company_subforums': company_subforums
+    }) 
 
 def about(request): 
     return render(request, 'about.html')
