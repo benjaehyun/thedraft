@@ -9,7 +9,8 @@ from django.views.generic import ListView, DetailView
 from .models import Subforum, Post, Company
 from .forms import PostForm
 
-# Meta View Functions
+# Other View Functions
+# Home view function is a Subforum index
 def home(request): 
     subforums = Subforum.objects.all()
     # Like this, or can redirect to subforum/index.html instead
@@ -20,7 +21,7 @@ def home(request):
 def about(request): 
     return render(request, 'about.html')
 
-# Subforum CRUD views
+# Subforum CRUD Views
 class SubforumCreate(CreateView): 
     model = Subforum
     fields = ['title', 'pinned']
@@ -35,33 +36,30 @@ def subforums_detail(request, subforum_id):
 
 class SubforumUpdate(UpdateView):
     model = Subforum
-    fields = ['age', 'team', 'description']
+    fields = 'title'
 
-
-
-# Post CRUD views
+# Post CRUD Views
 def add_post(request, subforum_id): 
     form = PostForm(request.POST)
     if form.is_valid():
-        new_post = form.save(commit = False)
+        new_post = form.save(commit=False)
         new_post.subforum_id = subforum_id
         new_post.save()
-    return redirect('subforums_detail', subforum_id = subforum_id)
+    return redirect('subforums_detail', subforum_id=subforum_id)
 
 def update_post(request, post_id, subforum_id):
-    post = Post.objects.get(id = post_id)
+    post = Post.objects.get(id=post_id)
     form = PostForm(request.POST)
     if form.is_valid():
         post = form.save(commit=False)
         post.save()
-    return redirect('subforum_detail', subforum_id = subforum_id)
+    return redirect('subforum_detail', subforum_id=subforum_id)
 
-class DeletePost(DeleteView):
+class PostDelete(DeleteView):
     model = post
     success_url = '/subforum/<int:subforum_id/'
 
-
-# Company Subforum Views
+# Company_Subforum CRUD Views
 class Company_SubforumCreate(CreateView): 
     model = Company_Subforum
     fields = ['title', 'pinned']
@@ -73,14 +71,6 @@ def company_subfoums_index(request):
         'company_subforums': company_subforums
     })
 
-def add_company_post(request, company_subforum_id): 
-    form = PostForm(request.POST)
-    if form.is_valid():
-        new_post = form.save(commit=False)
-        new_post.company_subforum_id = company_subforum_id
-        new_post.save()
-    return redirect('company_subforums_detail', company_subforum_id = company_subforum_id)
-
 def company_subforums_detail(request, company_subforum_id): 
     company_subforum = Company_Subforum.objects.get(id=company_subforum_id)
     post_form = PostForm()
@@ -89,11 +79,32 @@ def company_subforums_detail(request, company_subforum_id):
         'post_form': post_form
         })
 
+class Company_SubforumUpdate(UpdateView):
+    model = Company_Subforum
+    fields = 'title'
 
+# Company_Post CRUD Views
+def add_company_post(request, company_subforum_id): 
+    form = PostForm(request.POST)
+    if form.is_valid():
+        new_company_post = form.save(commit=False)
+        new_company_post.company_subforum_id = company_subforum_id
+        new_company_post.save()
+    return redirect('company_subforums_detail', company_subforum_id=company_subforum_id)
 
+def update_company_post(request, company_post_id, company_subforum_id):
+    company_post = Company_Post.objects.get(id=company_post_id)
+    form = PostForm(request.POST)
+    if form.is_valid():
+        company_post = form.save(commit=False)
+        company_post.save()
+    return redirect('subforum_detail', company_subforum_id=company_subforum_id)
 
+class Company_PostDelete(DeleteView):
+    model = post
+    success_url = '/subforum/<int:subforum_id/'
 
-# Company Views
+# Company CRUD Views
 class CompanyList(ListView): 
     model = Company 
     template_name = "company/index.html"
