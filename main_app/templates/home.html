@@ -1,22 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Home</h1>
+<h1>Home Page</h1>
 
-<h2>list of gen topics</h2>
+<h2>List of General Topics</h2>
 
 <a href="{% url 'subforums_create' %}">
-    <button class="waves-effect waves-light btn-large">Create A Subforum</button>
+    <button class="btn btn-primary btn-lg">Create A Subforum</button>
 </a>
 
 {% for subforum in subforums %}
     {% if subforum.pinned %}
         <a href="{% url 'subforums_detail' subforum.id %}">
-            <div class="card">
-                <div class="card-content">
-                    <span class="card-title"> {{ subforum.title }} </span>
-                    <small> {{ subforum.date }} </small>
-                    <small> {{ subforum.likes }} </small>
+            <div class="card mb-3">
+                <div class="card-body forum-card">
+                    <h5 class="card-title">{{ subforum.title }}</h5>
+                    <p class="card-text">{{ subforum.date }}</p>
+                    <p class="card-text">{{ subforum.likes }}</p>
                 </div>
             </div>
         </a>
@@ -26,11 +26,11 @@
 {% for subforum in subforums %}
     {% if subforum.pinned == False %}
         <a href="{% url 'subforums_detail' subforum.id %}">
-            <div class="card">
-                <div class="card-content">
-                    <span class="card-title"> {{ subforum.title }} </span>
-                    <small> {{ subforum.date }} </small>
-                    <small> {{ subforum.likes }} </small>
+            <div class="card mb-3">
+                <div class="card-body forum-card">
+                    <h5 class="card-title">{{ subforum.title }}</h5>
+                    <p class="card-text">{{ subforum.date }}</p>
+                    <p class="card-text">{{ subforum.likes }}</p>
                 </div>
             </div>
         </a>

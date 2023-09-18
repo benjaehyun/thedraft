@@ -3,13 +3,13 @@
 
 <h1>List of Companies</h1>
 <a href="{% url 'company_create' %}">
-    <button class="waves-effect waves-light btn-large">Add A Company</button>
+    <button class="btn btn-primary btn-lg">Add A Company</button>
 </a>
 
 {% for company in company_list %}
     <a href="{% url 'company_detail' company.id %}">
-        <div class="card">
-            <div class="card-content">
+        <div class="card mb-3">
+            <div class="card-body">
                 <span class="card-title"> {{ company.name }} </span>
                 <p> {{ company.industry }} </p>
                 <p> {{ company.description }} </p>
