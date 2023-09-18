@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from .models import Subforum, Post, Company
+from .models import Subforum, Post, Company, Company_Subforum
 from .forms import PostForm
 
 # Other View Functions
@@ -14,12 +14,12 @@ from .forms import PostForm
 def home(request): 
     subforums = Subforum.objects.all()
     # Like this, or can redirect to subforum/index.html instead
-    return render(request, 'home.html', { 
+    return render(request, 'home', { 
         'subforums': subforums
     })
 
 def about(request): 
-    return render(request, 'about.html')
+    return render(request, 'about')
 
 # Subforum CRUD Views
 class SubforumCreate(CreateView): 
@@ -53,11 +53,11 @@ def update_post(request, post_id, subforum_id):
     if form.is_valid():
         post = form.save(commit=False)
         post.save()
-    return redirect('subforum_detail', subforum_id=subforum_id)
+    return redirect('subforums_detail', subforum_id=subforum_id)
 
 class PostDelete(DeleteView):
-    model = post
-    success_url = '/subforum/<int:subforum_id/'
+    model = Post
+    success_url = '/subforums/<int:subforum_id/'
 
 # Company_Subforum CRUD Views
 class Company_SubforumCreate(CreateView): 
@@ -75,7 +75,7 @@ def company_subfoums_index(request):
 def company_subforums_detail(request, company_subforum_id): 
     company_subforum = Company_Subforum.objects.get(id=company_subforum_id)
     post_form = PostForm()
-    return render(request, 'company_subforums_detail.html', {
+    return render(request, 'company_subforums_detail', {
         'company_subforum': company_subforum, 
         'post_form': post_form
         })
@@ -102,8 +102,8 @@ def update_company_post(request, company_post_id, company_subforum_id):
     return redirect('company_subforums_detail', company_subforum_id=company_subforum_id)
 
 class Company_PostDelete(DeleteView):
-    model = post
-    success_url = '/subforum/<int:subforum_id/'
+    model = Post
+    success_url = '/subforums/<int:subforum_id/'
 
 # Company CRUD Views
 class CompanyList(ListView): 
@@ -113,6 +113,7 @@ class CompanyList(ListView):
 class CompanyDetail(DetailView): 
     model = Company 
     template_name = "company/detail.html"
+
 
 class CompanyCreate(CreateView): 
     model = Company 
