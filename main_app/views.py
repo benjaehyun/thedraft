@@ -11,13 +11,13 @@ from .forms import PostForm
 
 def subforms_index(request): 
     subforums = Subforum.objects.all()
-    # Redirect? To like subforum/index.html
+    # Like this, or can redirect to subforum/index.html instead
     return render(request, 'home.html', { 
         'subforums': subforums
     })
 
 def company_subforms_index(request):
-    company_subforums = CompanySubforum.objects.all()
+    company_subforums = Company_Subforum.objects.all()
     # Where should this live? I picked this one because this file already exists
     return render(request, 'subforum/index.html', {
         'company_subforums': company_subforums
@@ -34,8 +34,20 @@ def subforums_detail(request, subforum_id):
         'post_form': post_form
         })
 
+def company_subforums_detail(request, company_subforum_id): 
+    company_subforum = Company_Subforum.objects.get(id=company_subforum_id)
+    post_form = PostForm()
+    return render(request, 'comapny_subforum/detail.html', {
+        'company_subforum': company_subforum, 
+        'post_form': post_form
+        })
+
 class SubforumCreate(CreateView): 
     model = Subforum
+    fields = ['title', 'pinned']
+
+class Company_SubforumCreate(CreateView): 
+    model = Company_Subforum
     fields = ['title', 'pinned']
 
 def add_post(request, subforum_id): 
@@ -45,6 +57,14 @@ def add_post(request, subforum_id):
         new_post.subforum_id = subforum_id
         new_post.save()
     return redirect('subforums_detail', subforum_id = subforum_id)
+
+def add_company_post(request, company_subforum_id): 
+    form = PostForm(request.POST)
+    if form.is_valid():
+        new_post = form.save(commit=False)
+        new_post.company_subforum_id = company_subforum_id
+        new_post.save()
+    return redirect('company_subforums_detail', company_subforum_id = company_subforum_id)
 
 class CompanyList(ListView): 
     model = Company 
