@@ -64,17 +64,18 @@ class Company_SubforumCreate(CreateView):
     model = Company_Subforum
     fields = ['title', 'pinned']
 
+# Question on this one
 def company_subfoums_index(request):
     company_subforums = Company_Subforum.objects.all()
     # Where should this live? I picked this one because this file already exists
-    return render(request, 'company/detail.html', {
+    return render(request, 'company_index', {
         'company_subforums': company_subforums
     })
 
 def company_subforums_detail(request, company_subforum_id): 
     company_subforum = Company_Subforum.objects.get(id=company_subforum_id)
     post_form = PostForm()
-    return render(request, 'comapny_subforum/detail.html', {
+    return render(request, 'company_subforums_detail.html', {
         'company_subforum': company_subforum, 
         'post_form': post_form
         })
@@ -98,7 +99,7 @@ def update_company_post(request, company_post_id, company_subforum_id):
     if form.is_valid():
         company_post = form.save(commit=False)
         company_post.save()
-    return redirect('subforum_detail', company_subforum_id=company_subforum_id)
+    return redirect('company_subforums_detail', company_subforum_id=company_subforum_id)
 
 class Company_PostDelete(DeleteView):
     model = post
