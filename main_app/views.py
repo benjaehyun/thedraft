@@ -1,37 +1,52 @@
 import uuid
 import boto3
 import os
+from django.forms.models import BaseModelForm
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-# from .forms import FeedingForm
-from .models import Post, Photo
+from django.views.generic import ListView, DetailView
+from .models import Subforum, Post, Company
+from .forms import PostForm
 
-
-# Create your views here.
 def home(request): 
-    subforums = S
-    return render(request, home.html)
+    subforums = Subforum.objects.all()
+    return render(request, 'home.html', {
+        'subforums': subforums
+    })
 
-def add_photo(request, photo_id):
-    photo_file = request.FILES.get('photo-file', None)
-    if photo_file:
-        s3 = boto3.client('s3')
-        # need a unique "key" for S3 / needs image file extension too
-        key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
-        # just in case something goes wrong
-        try:
-            bucket = os.environ['S3_BUCKET']
-            s3.upload_fileobj(photo_file, bucket, key)
-            # build the full url string
-            url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
-            # we can assign to cat_id or cat (if you have a cat object)
-            Photo.objects.create(url=url, photo_id=photo_id)
-        except Exception as e:
-            print('An error occurred uploading file to S3')
-            print(e)
-    return redirect('detail', photo_id=photo_id)
+def about(request): 
+    return render(request, 'about.html')
 
-def create_post(request): 
-    Post.object.create()
-    id = post_id 
-    Photo.objects.create(url=url, post_id = id)
+def subforums_detail(request, subforum_id): 
+    subforum = Subforum.objects.get(id=subforum_id)
+    post_form = PostForm()
+    return render(request, 'subforum/detail.html', {
+        'subforum': subforum, 
+        'post_form': post_form
+        })
+
+class SubforumCreate(CreateView): 
+    model = Subforum
+    fields = ['title', 'pinned']
+
+def add_post(request, subforum_id): 
+    form = PostForm(request.POST)
+    if form.is_valid():
+        new_post = form.save(commit=False)
+        new_post.subforum_id = subforum_id
+        new_post.save()
+    return redirect('subforums_detail', subforum_id = subforum_id)
+
+class CompanyList(ListView): 
+    model = Company 
+    template_name = "company/index.html"
+
+class CompanyDetail(DetailView): 
+    model = Company 
+    template_name = "company/detail.html"
+
+class CompanyCreate(CreateView): 
+    model = Company 
+    fields = '__all__'
+    template_name = "company/form.html"

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>List of Companies</h1>
+<a href="{% url 'company_create' %}">
+    <button class="waves-effect waves-light btn-large">Add A Company</button>
+</a>
+
+{% for company in company_list %}
+    <a href="{% url 'company_detail' company.id %}">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title"> {{ company.name }} </span>
+                <p> {{ company.industry }} </p>
+                <p> {{ company.description }} </p>
+            </div>
+        </div>
+    </a>
+{% endfor %}
+
+
+{% endblock %}
