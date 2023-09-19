@@ -7,7 +7,13 @@
             <h1>{{ subforum.title }}</h1>
             <small>Created: {{ subforum.date }}</small>
             <small>Likes: {{ subforum.likes }}</small>
+            <p> {{ subforum.content }} </p>
+            <form action=" {% url 'subforums_update' subforum.id %} ">
+                {% csrf_token %}
+                <input type="submit" class="btn" value="Edit Subforum">
+            </form>
         </div>
+    </div>
 
     <div class="row mt-4">
         <div class="col">
@@ -18,12 +24,20 @@
                     <small>Created: {{ post.date }}</small>
                     <small>Likes: {{ post.likes }}</small>
                     <p>{{ post.content }}</p>
+                    <form action=" {% url 'delete_post' subforum.id post.id %} ">
+                        {% csrf_token %}
+                        <input type="submit" class="btn" value="Delete Post">
+                    </form>
                 </div>
                 <div class="card-content">
                     {% for comment in post.comment_set.all %}
                         <p> {{ comment.user }} Commented:</p>
                         <p> {{ comment.content }} </p>
                         <small> {{ comment.date }} </small>
+                        <form action=" {% url 'delete_comment' subforum.id post.id comment.id %} ">
+                            {% csrf_token %}
+                            <input type="submit" class="btn" value="Delete Comment">
+                        </form>
                     {% endfor %}
                 </div>
                 <div>
