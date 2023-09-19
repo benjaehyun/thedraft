@@ -13,6 +13,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
+from django.core.exceptions import PermissionDenied
 
 # Other View Functions
 # Home view function is a Subforum index
@@ -47,6 +48,18 @@ def subforums_detail(request, subforum_id):
 class SubforumUpdate(LoginRequiredMixin, UpdateView): 
     model = Subforum
     fields = ['title', 'content']
+
+    def user_passes_test(self,request):
+        if request.user.is_authenticated: 
+            self.object = self.get_object()
+            return self.object.user == request.user 
+        return False 
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not self.user_passes_test(request):
+            raise PermissionDenied
+        return super(SubforumUpdate, self).dispatch(
+            request, *args, **kwargs)
     
     
 @login_required
@@ -73,6 +86,18 @@ class PostDelete(LoginRequiredMixin, DeleteView): #probably add delete confirmat
         subforum_id = self.object.subforum_id
         return reverse('subforums_detail', kwargs={'subforum_id': subforum_id})
 
+    def user_passes_test(self,request):
+        if request.user.is_authenticated: 
+            self.object = self.get_object()
+            return self.object.user == request.user 
+        return False 
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not self.user_passes_test(request):
+            raise PermissionDenied
+        return super(PostDelete, self).dispatch(
+            request, *args, **kwargs)
+
 
 @login_required
 def add_comment(request, subforum_id, post_id): 
@@ -89,6 +114,18 @@ class CommentDelete(LoginRequiredMixin, DeleteView): #probably add delete confir
     def get_success_url(self): 
         subforum_id = self.object.post.subforum_id
         return reverse('subforums_detail', kwargs={'subforum_id': subforum_id})
+    
+    def user_passes_test(self,request):
+        if request.user.is_authenticated: 
+            self.object = self.get_object()
+            return self.object.user == request.user 
+        return False 
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not self.user_passes_test(request):
+            raise PermissionDenied
+        return super(CommentDelete, self).dispatch(
+            request, *args, **kwargs)
 
 class CompanyList(ListView): 
     model = Company 
@@ -125,7 +162,19 @@ class Company_SubforumCreate(LoginRequiredMixin, CreateView):
   
 class Company_SubforumUpdate(LoginRequiredMixin, UpdateView):
     model = Company_Subforum
-    fields = 'title'
+    fields = ['title', 'content']
+
+    def user_passes_test(self,request):
+        if request.user.is_authenticated: 
+            self.object = self.get_object()
+            return self.object.user == request.user 
+        return False 
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not self.user_passes_test(request):
+            raise PermissionDenied
+        return super(Company_SubforumUpdate, self).dispatch(
+            request, *args, **kwargs)
 
 # Ben handling these
 # def company_subfoums_index(request):
@@ -175,18 +224,44 @@ def add_company_comment(request, company_id, company_subforum_id, company_post_i
 
 class Company_CommentDelete(LoginRequiredMixin, DeleteView): #probably add delete confirmation
     model = Company_Comment 
+
     def get_success_url(self): 
         subforum_id = self.object.post.subforum_id
         company_id = self.object.post.subforum.company_id
         return reverse('company_subforums_detail', kwargs={'company_id': company_id, 'company_subforum_id': subforum_id})
 
+    def user_passes_test(self,request):
+        if request.user.is_authenticated: 
+            self.object = self.get_object()
+            return self.object.user == request.user 
+        return False 
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not self.user_passes_test(request):
+            raise PermissionDenied
+        return super(Company_CommentDelete, self).dispatch(
+            request, *args, **kwargs)
+
+
 class Company_PostDelete(LoginRequiredMixin, DeleteView): #delete confirmation 
     model = Company_Post
+
     def get_success_url(self): 
         subforum_id = self.object.subforum_id
         company_id = self.object.subforum.company_id 
         return reverse('company_subforums_detail', kwargs={'company_id': company_id, 'company_subforum_id': subforum_id})
 
+    def user_passes_test(self,request):
+        if request.user.is_authenticated: 
+            self.object = self.get_object()
+            return self.object.user == request.user 
+        return False 
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not self.user_passes_test(request):
+            raise PermissionDenied
+        return super(Company_PostDelete, self).dispatch(
+            request, *args, **kwargs)
 
 
 
