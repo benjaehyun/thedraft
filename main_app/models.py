@@ -104,7 +104,10 @@ class Company_Subforum(models.Model):
         return f'title subforum: {self.title}'
     
     def get_absolute_url(self): 
-        return reverse('company_subforum_detail', kwargs={'pk': self.id})  #refactor with the correct views reference and variable names 
+        return reverse('company_subforums_detail', kwargs={
+            'company_id': self.company_id,
+            'company_subforum_id': self.id
+            })  #refactor with the correct views reference and variable names 
     
 class Company_Post(models.Model): 
     content = models.TextField(max_length=600)
