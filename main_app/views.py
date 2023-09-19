@@ -12,7 +12,7 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.urls import reverse
 
 # Other View Functions
 # Home view function is a Subforum index
@@ -46,10 +46,9 @@ def subforums_detail(request, subforum_id):
 
 class SubforumUpdate(LoginRequiredMixin, UpdateView): 
     model = Subforum
-    fields = 'title'
+    fields = ['title', 'content']
     
     
-
 @login_required
 def add_post(request, subforum_id): 
     form = PostForm(request.POST)
@@ -69,8 +68,11 @@ def update_post(request, post_id, subforum_id): #double check
     return redirect('subforum/<int:subforum_id>', subforum_id=subforum_id)
 
 class PostDelete(LoginRequiredMixin, DeleteView): #probably add delete confirmation
-    model = Post
-    success_url = '/subforum/<int:subforum_id>/'
+    model = Post 
+    def get_success_url(self): 
+        subforum_id = self.object.subforum_id
+        return reverse('subforums_detail', kwargs={'subforum_id': subforum_id})
+
 
 @login_required
 def add_comment(request, subforum_id, post_id): 
@@ -81,6 +83,12 @@ def add_comment(request, subforum_id, post_id):
         new_comment.user_id = request.user.id 
         new_comment.save()
     return redirect('subforums_detail', subforum_id = subforum_id)
+
+class CommentDelete(LoginRequiredMixin, DeleteView): #probably add delete confirmation
+    model = Comment 
+    def get_success_url(self): 
+        subforum_id = self.object.post.subforum_id
+        return reverse('subforums_detail', kwargs={'subforum_id': subforum_id})
 
 class CompanyList(ListView): 
     model = Company 
@@ -96,7 +104,6 @@ class CompanyCreate(LoginRequiredMixin, CreateView):
     fields = '__all__'
     template_name = "company/form.html"
 
-
 # Company_Subforum CRUD Views
 # def company_subforum_create(request, company_id):
 #     form = Company_SubforumForm(request.POST)
@@ -106,7 +113,7 @@ class CompanyCreate(LoginRequiredMixin, CreateView):
 #         new_company_subforum.save()
 #     return redirect('company/detail.html', company_id = company_id)
 
-class CompanySubforumCreate(LoginRequiredMixin, CreateView): 
+class Company_SubforumCreate(LoginRequiredMixin, CreateView): 
     model = Company_Subforum
     fields = ['title', 'pinned', 'content']
 
@@ -115,8 +122,7 @@ class CompanySubforumCreate(LoginRequiredMixin, CreateView):
         form.instance.company = get_object_or_404(Company, pk=self.kwargs['company_id'])
         return super().form_valid(form)
 
-
-    
+  
 class Company_SubforumUpdate(LoginRequiredMixin, UpdateView):
     model = Company_Subforum
     fields = 'title'
@@ -167,9 +173,19 @@ def add_company_comment(request, company_id, company_subforum_id, company_post_i
         new_company_comment.save()
     return redirect('company_subforums_detail', company_id=company_id, company_subforum_id = company_subforum_id)
 
+class Company_CommentDelete(LoginRequiredMixin, DeleteView): #probably add delete confirmation
+    model = Company_Comment 
+    def get_success_url(self): 
+        subforum_id = self.object.post.subforum_id
+        company_id = self.object.post.subforum.company_id
+        return reverse('company_subforums_detail', kwargs={'company_id': company_id, 'company_subforum_id': subforum_id})
+
 class Company_PostDelete(LoginRequiredMixin, DeleteView): #delete confirmation 
-    model = Post
-    success_url = '/subforum/<int:subforum_id>/'
+    model = Company_Post
+    def get_success_url(self): 
+        subforum_id = self.object.subforum_id
+        company_id = self.object.subforum.company_id 
+        return reverse('company_subforums_detail', kwargs={'company_id': company_id, 'company_subforum_id': subforum_id})
 
 
 

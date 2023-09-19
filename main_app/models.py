@@ -36,6 +36,9 @@ class Post(models.Model):
   
     def __str__(self):
         return f'the id of this post is {self.id}'
+    
+    def get_absolute_url(self): 
+        return reverse('subforums_detail', kwargs={'subforum_id': self.subforum.id}) 
 
     class Meta: 
         ordering = ['-date']
