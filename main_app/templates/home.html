@@ -4,10 +4,11 @@
 <h1>Home Page</h1>
 
 <h2>List of General Topics</h2>
-
-<a href="{% url 'subforums_create' %}">
-    <button class="btn btn-primary btn-lg">Create A Subforum</button>
-</a>
+{% if user.is_authenticated %}
+    <a href="{% url 'subforums_create' %}">
+        <button class="btn btn-primary btn-lg">Create A Subforum</button>
+    </a>
+{% endif %}
 
 {% for subforum in subforums %}
     {% if subforum.pinned %}
