@@ -8,6 +8,20 @@
             <small>Created: {{ subforum.date }}</small>
             <small>Likes: {{ subforum.likes }}</small>
         </div>
+        <div class="card-content">
+            {% for comment in post.comment_set.all %}
+            <p> {{ comment.user }} Commented:</p>
+            <p> {{ comment.content }} </p>
+            <small> {{ comment.date }} </small>
+            {% endfor %}
+        </div>
+    </div>
+    <div>
+        <form action=" {% url 'add_comment' subforum.id post.id %} " method="POST">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <input type="submit" class="btn" value="Add A Comment">
+        </form>
     </div>
 
     <div class="row mt-4">
