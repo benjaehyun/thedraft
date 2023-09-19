@@ -7,6 +7,14 @@
             <h1>{{ subforum.title }}</h1>
             <small>Created: {{ subforum.date }}</small>
             <small>Likes: {{ subforum.likes }}</small>
+            <p> {{ subforum.content }} </p>
+            <a href=" {% url 'company_detail' subforum.company.id %} "> {{ subforum.company }} </a>
+            {% if user == subforum.user %}
+                <form action=" {% url 'company_subforums_update' subforum.company.id subforum.id %} ">
+                    {% csrf_token %}
+                    <input type="submit" class="btn" value="Edit Subforum">
+                </form>
+            {% endif %}
         </div>
 
     <div class="row mt-4">
@@ -18,20 +26,34 @@
                     <small>Created: {{ post.date }}</small>
                     <small>Likes: {{ post.likes }}</small>
                     <p>{{ post.content }}</p>
+                    {% if user == post.user %}
+                        <form action=" {% url 'delete_company_post' subforum.company.id subforum.id post.id %} ">
+                            {% csrf_token %}
+                            <input type="submit" class="btn" value="Delete Post">
+                        </form>
+                    {% endif %}    
                 </div>
                 <div class="card-content">
                     {% for comment in post.company_comment_set.all %}
                         <p> {{ comment.user }} Commented:</p>
                         <p> {{ comment.content }} </p>
                         <small> {{ comment.date }} </small>
+                        {% if user == comment.user %}
+                            <form action=" {% url 'delete_company_comment' subforum.company.id subforum.id post.id comment.id %} ">
+                                {% csrf_token %}
+                                <input type="submit" class="btn" value="Delete Comment">
+                            </form>
+                        {% endif %}
                     {% endfor %}
                 </div>
                 <div>
-                    <form action=" {% url 'add_company_comment' post.subforum.company.id subforum.id post.id %} " method="POST">
-                        {% csrf_token %}
-                        {{ comment_form.as_p }}
-                        <input type="submit" class="btn" value="Add A Comment">
-                    </form>
+                    {% if user.is_authenticated %}
+                        <form action=" {% url 'add_company_comment' post.subforum.company.id subforum.id post.id %} " method="POST">
+                            {% csrf_token %}
+                            {{ comment_form.as_p }}
+                            <input type="submit" class="btn" value="Add A Comment">
+                        </form>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
@@ -41,11 +63,13 @@
     <div class="row mt-4">
         <div class="col">
             <h2>Add a Post</h2>
-            <form action="{% url 'add_company_post' subforum.company.id subforum.id %}" method="POST">
-                {% csrf_token %}
-                {{ post_form.as_p }}
-                <button type="submit" class="btn btn-primary">Add Post</button>
-            </form>
+            {% if user.is_authenticated %}
+                <form action="{% url 'add_company_post' subforum.company.id subforum.id %}" method="POST">
+                    {% csrf_token %}
+                    {{ post_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Add Post</button>
+                </form>
+            {% endif %}
         </div>
     </div>
 </div>
