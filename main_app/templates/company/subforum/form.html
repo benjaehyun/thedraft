@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Add Subforum for {{ company.name }} </h1>
+  <form action=" {% url 'company_subforums_create' company.id %} " enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    {{ subforum_form.as_p }}
+    <input type="file" name="photo-file" multiple>
+    <button type="submit" class="btn btn-primary">Add Subforum</button>
+  </form>
+{% endblock %}

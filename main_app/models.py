@@ -22,6 +22,20 @@ class Subforum(models.Model):
     def get_absolute_url(self): 
         return reverse('subforums_detail', kwargs={'subforum_id': self.id})  #refactor with the correct views reference and variable names 
     
+class Subforum_Likes(models.Model): 
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE
+    )
+    subforum = models.ForeignKey(
+        Subforum, 
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self): 
+        return f'likes model {self.id} '
+
+    
 class Post(models.Model): 
     content = models.TextField(max_length=600)
     date = models.DateField(auto_now_add=True)
@@ -45,7 +59,7 @@ class Post(models.Model):
 
 class Photo(models.Model): 
     url = models.CharField(max_length=200)
-    post = models.ForeignKey(
+    subforum = models.ForeignKey(
         Subforum, 
         on_delete=models.CASCADE
         )
@@ -111,6 +125,19 @@ class Company_Subforum(models.Model):
             'company_id': self.company_id,
             'company_subforum_id': self.id
             })  #refactor with the correct views reference and variable names 
+
+class Company_Subforum_Likes(models.Model): 
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE
+    )
+    subforum = models.ForeignKey(
+        Company_Subforum, 
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self): 
+        return f'likes model {self.id} '
     
 class Company_Post(models.Model): 
     content = models.TextField(max_length=600)
@@ -149,7 +176,7 @@ class Company_Comment(models.Model):
 
 class Company_Photo(models.Model): 
     url = models.CharField(max_length=200)
-    post = models.ForeignKey(
+    subforum = models.ForeignKey(
         Company_Subforum, 
         on_delete=models.CASCADE
     )
