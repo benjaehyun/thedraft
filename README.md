@@ -41,4 +41,3 @@ styling:
         restructure the navbar so that the links are grouped according to usage. ie login/signup on the right 
         *favicon 
 
-Hello my friends.
