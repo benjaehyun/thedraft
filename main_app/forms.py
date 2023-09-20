@@ -1,10 +1,15 @@
 from django.forms import ModelForm
-from .models import Post, Comment,Company_Subforum, Company_Post, Company_Comment 
+from .models import Post, Comment,Company_Subforum, Company_Post, Company_Comment, Subforum 
 
 class PostForm(ModelForm): 
     class Meta: 
         model = Post 
         fields = ['content']
+
+class SubforumForm(ModelForm): 
+    class Meta: 
+        model = Subforum 
+        fields = ['title', 'pinned', 'content']
 
 class CommentForm(ModelForm): 
     class Meta: 
@@ -14,7 +19,7 @@ class CommentForm(ModelForm):
 class Company_SubforumForm(ModelForm): 
     class Meta: 
         model = Company_Subforum 
-        fields = ['content', 'pinned']
+        fields = ['title', 'pinned', 'content']
 
 class Company_PostForm(ModelForm): 
     class Meta: 

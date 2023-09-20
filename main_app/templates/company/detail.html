@@ -7,7 +7,7 @@
 <p> {{company.description}} </p>
 
 {% if user.is_authenticated %}
-  <a href="{% url 'company_subforums_create' company.id %}">
+  <a href="{% url 'company_subforums_new' company.id %}">
     <button class="btn btn-primary btn-lg">Create A Subforum</button>
   </a>
 {% endif %}

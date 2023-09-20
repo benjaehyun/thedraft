@@ -14,6 +14,9 @@ thread organization
 subforum organization icebox 
     adding ux features like most recent activities/modified 
 
+icebox 
+    view subforums that a user has liked 
+
 user roles/permissions 
     image form 
     pagination
@@ -21,8 +24,7 @@ user roles/permissions
     edited tag on subforums 
 
 in order 
-    photo form 
-    job tracker || ajax call 
+    job tracker
     pagination 
     styling 
 
@@ -41,3 +43,15 @@ styling:
         restructure the navbar so that the links are grouped according to usage. ie login/signup on the right 
         *favicon 
 
+job tracker notes 
+    create a new job tracker model 
+    create a new pdf storing model 
+    create a component model for the job tracker 
+        code it very similarly to posts in a subforum 
+        can use ajax calls again to toggle that boolean completed field that we were talking about 
+    figure out the pdf viewer 
+    can use the same code for photo storage 
+    need to figure out a way to limit the file type for both the photos models and pdfs 
+
+
+1100
