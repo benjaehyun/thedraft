@@ -3,7 +3,6 @@
 
 <div class="container mt-4">
     <div class="row">
-        <div class="col">
             <h1>{{ subforum.title }}</h1>
             <small>Created: {{ subforum.date }}</small>
             <small>Likes: <span id="likes"> {{ likes }} </span> </small>
@@ -32,7 +31,6 @@
             </div>
         </div>
     </div>
-
     <div class="row mt-4">
         <div class="col">
             {% for post in subforum.company_post_set.all %}
@@ -83,7 +81,7 @@
                 <form action="{% url 'add_company_post' subforum.company.id subforum.id %}" method="POST">
                     {% csrf_token %}
                     {{ post_form.as_p }}
-                    <button type="submit" class="btn btn-primary">Add Post</button>
+                    <button type="submit" class="btn">Add Post</button>
                 </form>
             {% endif %}
         </div>
