@@ -2,18 +2,19 @@ import uuid
 import boto3
 import os
 from django.forms.models import BaseModelForm
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from .models import Subforum, Post, Company, Company_Subforum, Company_Post, Photo, Comment, Company_Comment, Company_Photo
-from .forms import PostForm, CommentForm, Company_PostForm, Company_CommentForm, Company_SubforumForm
+from .models import Subforum, Post, Company, Company_Subforum, Company_Post, Comment, Company_Comment, Photo, Company_Photo, Subforum_Likes, Company_Subforum_Likes
+from .forms import PostForm, CommentForm, Company_PostForm, Company_CommentForm, Company_SubforumForm, SubforumForm
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
+
 
 # Other View Functions
 # Home view function is a Subforum index
@@ -27,22 +28,67 @@ def about(request):
     return render(request, 'about.html')
 
 # Subforum CRUD Views
-class SubforumCreate(LoginRequiredMixin, CreateView): 
-    model = Subforum
-    fields = ['title', 'pinned']
+# class SubforumCreate(LoginRequiredMixin, CreateView): 
+#     model = Subforum
+#     fields = ['title', 'pinned']
 
-    def form_valid(self, form): 
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+#     def form_valid(self, form): 
+#         form.instance.user = self.request.user
+#         return super().form_valid(form)
+
+@login_required
+def subforums_new(request): 
+    subforum_form = SubforumForm()
+    return render(request, 'subforum/form.html', {
+        'subforum_form': subforum_form
+        })
+
+@login_required
+def subforums_create(request): 
+    form = SubforumForm(request.POST)
+    try: 
+        if form.is_valid():
+            new_subforum = form.save(commit=False)
+            new_subforum.user_id = request.user.id 
+            new_subforum.save()
+        request_files = request.FILES.getlist('photo-file', None)
+        print(f'request_files: {request_files}')
+        for photo_file in request_files:
+            print(f'photofile: {photo_file} ')
+            if photo_file:
+                s3 = boto3.client('s3')
+                key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+                try:
+                    bucket = os.environ['S3_BUCKET']
+                    print(f'bucket: {bucket} ')
+                    s3.upload_fileobj(photo_file, bucket, key)
+                    url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+                    print(f'url: {url} ')
+                    Photo.objects.create(url=url, subforum=new_subforum)
+                except Exception as e:
+                    print('An error occurred uploading file to S3')
+                    print(e)
+        return redirect('subforums_detail', subforum_id = new_subforum.id)
+    except Exception as e: 
+        return HttpResponseServerError(e)
+        
 
 def subforums_detail(request, subforum_id): 
     subforum = Subforum.objects.get(id=subforum_id)
     post_form = PostForm()
     comment_form = CommentForm()
+    likes = len(Subforum_Likes.objects.filter(subforum=subforum_id))
+    try: 
+        subforum_like = Subforum_Likes.objects.get(subforum=subforum, user=request.user)
+        is_liked=True
+    except: 
+        is_liked = False
     return render(request, 'subforum/detail.html', {
         'subforum': subforum, 
         'post_form': post_form, 
-        'comment_form': comment_form 
+        'comment_form': comment_form, 
+        'likes': likes, 
+        'is_liked': is_liked
         })
 
 class SubforumUpdate(LoginRequiredMixin, UpdateView): 
@@ -60,6 +106,21 @@ class SubforumUpdate(LoginRequiredMixin, UpdateView):
             raise PermissionDenied
         return super(SubforumUpdate, self).dispatch(
             request, *args, **kwargs)
+
+@login_required
+def subforums_like(request, subforum_id): 
+    subforum = Subforum.objects.get(id=subforum_id)
+    print(f'subforum: {subforum} ')
+    try:
+        subforum_like = Subforum_Likes.objects.get(subforum=subforum, user=request.user)
+        print(f'subforum_like: {subforum_like} ')
+        subforum_like.delete()
+        is_liked=False
+    except Subforum_Likes.DoesNotExist:
+        Subforum_Likes.objects.create(subforum=subforum, user=request.user)
+        is_liked=True
+    likes = len(Subforum_Likes.objects.filter(subforum=subforum_id))
+    return JsonResponse({"success": True, 'likes': likes, 'is_liked': is_liked})
     
     
 @login_required
@@ -70,6 +131,8 @@ def add_post(request, subforum_id):
         new_post.subforum_id = subforum_id
         new_post.user_id = request.user.id 
         new_post.save()
+
+
     return redirect('subforums_detail', subforum_id = subforum_id)
 
 def update_post(request, post_id, subforum_id): #double check
@@ -150,14 +213,53 @@ class CompanyCreate(LoginRequiredMixin, CreateView):
 #         new_company_subforum.save()
 #     return redirect('company/detail.html', company_id = company_id)
 
-class Company_SubforumCreate(LoginRequiredMixin, CreateView): 
-    model = Company_Subforum
-    fields = ['title', 'pinned', 'content']
+# class Company_SubforumCreate(LoginRequiredMixin, CreateView): 
+#     model = Company_Subforum
+#     fields = ['title', 'pinned', 'content']
 
-    def form_valid(self, form): 
-        form.instance.user = self.request.user
-        form.instance.company = get_object_or_404(Company, pk=self.kwargs['company_id'])
-        return super().form_valid(form)
+#     def form_valid(self, form): 
+#         form.instance.user = self.request.user
+#         form.instance.company = get_object_or_404(Company, pk=self.kwargs['company_id'])
+#         return super().form_valid(form)
+
+@login_required
+def company_subforums_new(request, company_id): 
+    subforum_form = Company_SubforumForm()
+    company = Company.objects.get(id=company_id)
+    return render(request, 'company/subforum/form.html', {
+        'subforum_form': subforum_form, 
+        'company': company
+        })
+
+@login_required
+def company_subforums_create(request, company_id): 
+    form = Company_SubforumForm(request.POST)
+    try: 
+        if form.is_valid():
+            new_subforum = form.save(commit=False)
+            new_subforum.user_id = request.user.id 
+            new_subforum.company_id = company_id
+            new_subforum.save()
+        request_files = request.FILES.getlist('photo-file', None)
+        print(f'request_files: {request_files}')
+        for photo_file in request_files:
+            print(f'photofile: {photo_file} ')
+            if photo_file:
+                s3 = boto3.client('s3')
+                key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+                try:
+                    bucket = os.environ['S3_BUCKET']
+                    print(f'bucket: {bucket} ')
+                    s3.upload_fileobj(photo_file, bucket, key)
+                    url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+                    print(f'url: {url} ')
+                    Company_Photo.objects.create(url=url, subforum=new_subforum)
+                except Exception as e:
+                    print('An error occurred uploading file to S3')
+                    print(e)
+        return redirect('company_subforums_detail', company_id = company_id, company_subforum_id = new_subforum.id)
+    except Exception as e: 
+        return HttpResponseServerError(e)
 
   
 class Company_SubforumUpdate(LoginRequiredMixin, UpdateView):
@@ -188,11 +290,34 @@ def company_subforums_detail(request, company_id, company_subforum_id):
     subforum = Company_Subforum.objects.get(id=company_subforum_id)
     post_form = Company_PostForm()
     comment_form = Company_CommentForm()
+    likes = len(Company_Subforum_Likes.objects.filter(subforum=company_subforum_id))
+    try: 
+        subforum_like = Company_Subforum_Likes.objects.get(subforum=subforum, user=request.user)
+        is_liked=True
+    except: 
+        is_liked = False
     return render(request, 'company/subforum/detail.html', {
         'subforum': subforum, 
+        'likes': likes, 
+        'is_liked': is_liked,
         'post_form': post_form, 
         'comment_form': comment_form 
         })
+
+@login_required
+def company_subforums_like(request, company_id, company_subforum_id): 
+    subforum = Company_Subforum.objects.get(id=company_subforum_id)
+    print(f'subforum: {subforum} ')
+    try:
+        subforum_like = Company_Subforum_Likes.objects.get(subforum=subforum, user=request.user)
+        print(f'subforum_like: {subforum_like} ')
+        subforum_like.delete()
+        is_liked=False
+    except Company_Subforum_Likes.DoesNotExist:
+        Company_Subforum_Likes.objects.create(subforum=subforum, user=request.user)
+        is_liked=True
+    likes = len(Company_Subforum_Likes.objects.filter(subforum=company_subforum_id))
+    return JsonResponse({"success": True, 'likes': likes, 'is_liked': is_liked})
 
 
 # Company_Post CRUD Views

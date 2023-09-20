@@ -3,9 +3,19 @@
 
 <h1>Home Page</h1>
 
+<section class="about-us">
+    <h2>About Us</h2>
+    <p> Welcome to The Draft, the ultimate destination for tech enthusiasts and job seekers in the ever-evolving world of technology.
+        More than just a website, we are the #1 global hub for growing tech professionals.
+        Join our thriving community of over 1,000,000 members who leverage The Draft's diverse range of resources.
+        Explore in-depth articles, engage in discussions, access expert insights, and harness AI-powered tools to supercharge your tech career.
+        Whether you're aiming to land your dream job, navigate career transitions, or simply stay updated on industry trends, The Draft is your go-to platform.
+        Join us today and embark on a journey to enhance your tech career prospects. </p>
+</section>
+
 <h2>List of General Topics</h2>
 {% if user.is_authenticated %}
-    <a href="{% url 'subforums_create' %}">
+    <a href="{% url 'subforums_new' %}">
         <button class="btn btn-primary btn-lg">Create A Subforum</button>
     </a>
 {% endif %}

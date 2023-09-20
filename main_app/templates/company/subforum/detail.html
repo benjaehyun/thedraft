@@ -6,16 +6,32 @@
         <div class="col">
             <h1>{{ subforum.title }}</h1>
             <small>Created: {{ subforum.date }}</small>
-            <small>Likes: {{ subforum.likes }}</small>
+            <small>Likes: <span id="likes"> {{ likes }} </span> </small>
             <p> {{ subforum.content }} </p>
             <a href=" {% url 'company_detail' subforum.company.id %} "> {{ subforum.company }} </a>
+            {% for photo in subforum.company_photo_set.all %}
+                <img src=" {{ photo.url }} " alt="">
+            {% empty %}
+            <div>No Photos Uploaded</div>
+            {% endfor %}
             {% if user == subforum.user %}
                 <form action=" {% url 'company_subforums_update' subforum.company.id subforum.id %} ">
                     {% csrf_token %}
                     <input type="submit" class="btn" value="Edit Subforum">
                 </form>
             {% endif %}
+            <div>
+                <form class="like-button-form" method="POST">
+                    {% csrf_token %}
+                    {% if is_liked %}
+                        <button class="like-button" style="background-color: red;">LIKE</button>
+                    {% else %}
+                        <button class="like-button" style="background-color: white;" >LIKE</button>
+                    {% endif %}
+                </form>
+            </div>
         </div>
+    </div>
 
     <div class="row mt-4">
         <div class="col">
@@ -75,5 +91,35 @@
 </div>
 
 
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('.like-button-form').submit(function(event) {
+            event.preventDefault();
+            let form =$(this)
+            let button = document.querySelector('.like-button')
+            let likes= document.querySelector('#likes')
+            $.ajax({
+                url: "{% url 'company_subforums_like' subforum.company.id subforum.id %}", 
+                type: "POST", 
+                data: form.serialize(), 
+                dataType: "json", 
+                success: function(data) {
+                    if (data.success) {
+                        likes.innerText = data.likes
+                        data.is_liked ? button.style.backgroundColor = 'red' : button.style.backgroundColor = 'white'
+                        console.log(`success!, likes: ${data.likes} `)
+                    } else {
+                        alert('failed to add a like to the subforum')
+                    }
+                }, 
+                error: function() {
+                    alert('server failed to add a like')
+                }
+            })
+        } )
+    } )
+</script>
 
+{% endblock %}
 {% endblock %}
