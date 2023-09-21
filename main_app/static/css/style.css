@@ -11,29 +11,19 @@ h1 {
     font-size: 3.5vw; 
     margin-top: 0;
     margin-bottom: 5vw; 
-    color: #333;
+    /* color: #333; */
 }
 
-p {
-    /* border: 1px solid rgba(47, 79, 79, 0.71); */
-    /* padding: 10px;  */
-    /* background-color: #f5f5f5;  */
-    
-}
+/* p {
+    border: 1px solid rgba(47, 79, 79, 0.71); 
+    padding: 10px;  
+    background-color: #f5f5f5;  
+} */
 
-.row-content > p {
-    background-color: #FFA9A9;
-}
-
-.comment-container {
-    margin-top: 10px; 
-}
 .comment {
     background-color: #f5f5f5; 
-    padding: 10px; 
     border: 1px solid #060606; 
     border-radius: 5px; 
-    margin-top: 10px; 
 }
 
 .btn-add {
@@ -67,17 +57,17 @@ h2 {
     font-size: 2.5vw; 
     margin-top: 0;
     margin-bottom: 5vw; 
-    color: #333;
+    /* color: #333; */
     font-weight: bold;
 }
 
-#id_content {
-    width: 50%; /* Adjust the width as needed */
+/* #id_content {
+    width: 50%; 
     height: 20%;
-    padding: 10px; /* Add some padding to the content box */
+    padding: 10px; 
     margin: 10px;
     border: 1px solid #000; 
-}
+} */
 
 body {
     font-family: "greycliff-cf", sans-serif;
@@ -99,22 +89,25 @@ body {
 
 .about-us>p {
 
-    font-family: "ohno-softie-variable",sans-serif;
-    font-variation-settings: 'wght' 500;
+    font-family: "transducer-variable", sans-serif;
+    font-variation-settings: "slnt" 0, "wdth" 100, "wght" 100;
     color: white;
 }
 
 .row-content{
-    background-color: #f0f0f0;
+    background-color: #24305E;
     padding: 20px;
     border: 1px solid #ddd;
+    color: #797979;
 }
+
+#post-body {
+    background-color: #A8D0E6;
+}
+
 .card-body {
     /* background-color:#374785 */
-    background-color: #FFA9A9;
-
-    font-family: "transducer-variable", sans-serif;
-    font-variation-settings: "slnt" 0, "wdth" 100, "wght" 100;
+    background-color: #374785;
 }
 
 
@@ -152,22 +145,22 @@ body {
 .card-title {
     font-size: 1.5rem; 
     margin-bottom: 0.625rem; 
-    color: #333;
+    /* color: #333; */
 }
 
 .card-text {
     font-size: 1rem;
-    color: #777;
+    /* color: #777; */
 }
 
 .navbar-footer-style {
-    background-color: #A8D0E6 !important;
+    background-color: #374785 !important;
     color: #ffffff !important;
 }
 
 /* Override Bootstrap dropdown background */
 .navbar-footer-style .navbar-collapse {
-    background-color: #A8D0E6 !important;
+    background-color: #374785 !important;
 }
 
 /* Remove any box-shadow or border */
@@ -184,6 +177,35 @@ body {
 /* Custom CSS to change the navbar brand text color */
 .navbar-footer-style .navbar-brand {
     color: #ffffff !important; /* White text color */
+}
+
+.navbar-brand{
+    margin-left: 1.5vmin;
+}
+
+textarea {
+    width: 60vmax;
+    height: 5vmin;
+}
+
+input.btn-primary {
+    background-color: #f8e9a1;
+    border: 0.02em solid black; 
+    color:black;
+}
+input.btn-primary:hover {
+    background-color: #b9a643;
+    border: 0.02em solid black; 
+    color:black;
+}
+
+div.col>textarea{
+    height:15vmin;
+}
+
+form>p {
+    display: flex; 
+    align-items: center;
 }
 
 .page-footer {
@@ -219,6 +241,7 @@ body {
       display: none;
     }
 }
+
 
 .collapsing {
     height: 0;
