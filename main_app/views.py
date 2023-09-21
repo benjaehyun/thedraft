@@ -6,8 +6,8 @@ from django.http import HttpResponse, HttpResponseServerError, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from .models import Subforum, Post, Company, Company_Subforum, Company_Post, Comment, Company_Comment, Photo, Company_Photo, Subforum_Likes, Company_Subforum_Likes
-from .forms import PostForm, CommentForm, Company_PostForm, Company_CommentForm, Company_SubforumForm, SubforumForm
+from .models import Subforum, Post, Company, Company_Subforum, Company_Post, Comment, Company_Comment, Photo, Company_Photo, Subforum_Likes, Company_Subforum_Likes, Job_Application, Pdf, Application_Component, Component_Note
+from .forms import PostForm, CommentForm, Company_PostForm, Company_CommentForm, Company_SubforumForm, SubforumForm, Job_ApplicationForm, Component_NoteForm, Application_ComponentForm
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -404,3 +404,133 @@ def signup(request):
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
 
+def profile(request, user_id): 
+    applications = Job_Application.objects.filter(user=user_id)
+    return render(request, 'profile/detail.html', { 
+        'applications': applications
+    })
+
+def applications_new(request, user_id): 
+    application_form = Job_ApplicationForm()
+    return render(request, 'profile/application/form.html', {
+        'application_form': application_form
+        })
+
+
+def applications_create(request, user_id): 
+    form = Job_ApplicationForm(request.POST)
+    try: 
+        if form.is_valid():
+            new_application = form.save(commit=False)
+            new_application.user_id = request.user.id #this might not work
+            new_application.save()
+        request_files = request.FILES.getlist('pdf-file', None)
+        print(f'request_files: {request_files}')
+        for pdf_file in request_files:
+            print(f'pdffile: {pdf_file} ')
+            if pdf_file:
+                s3 = boto3.client('s3')
+                key = uuid.uuid4().hex[:6] + pdf_file.name[pdf_file.name.rfind('.'):]
+                try:
+                    bucket = os.environ['S3_BUCKET']
+                    print(f'bucket: {bucket} ')
+                    s3.upload_fileobj(pdf_file, bucket, key)
+                    url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+                    print(f'url: {url} ')
+                    Pdf.objects.create(url=url, job_application=new_application)
+                except Exception as e:
+                    print('An error occurred uploading file to S3')
+                    print(e)
+        return redirect('applications_detail', user_id=user_id, pk=new_application.id)
+    except Exception as e: 
+        return HttpResponseServerError(e)
+
+
+def applications_detail(request, user_id, application_id): 
+    application = Job_Application.objects.get(id=application_id)
+    note_form = Component_NoteForm()
+    component_form = Application_ComponentForm()
+    return render(request, 'profile/application/detail.html', {
+        'application': application, 
+        'note_form': note_form, 
+        'component_form': component_form
+        })
+
+class Job_ApplicationDelete(LoginRequiredMixin, DeleteView): #delete confirmation 
+    model = Job_Application
+
+    def get_success_url(self): 
+        user_id = self.object.user_id
+        return reverse('profile', kwargs={'user_id': user_id})
+
+    def user_passes_test(self,request):
+        if request.user.is_authenticated: 
+            self.object = self.get_object()
+            return self.object.user == request.user 
+        return False 
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not self.user_passes_test(request):
+            raise PermissionDenied
+        return super(Job_ApplicationDelete, self).dispatch(
+            request, *args, **kwargs)
+    
+class Application_ComponentDelete(LoginRequiredMixin, DeleteView): #delete confirmation 
+    model = Application_Component
+
+    def get_success_url(self): 
+        user_id = self.object.user_id
+        application_id = self.object.application_id
+        return reverse('applications_detail', kwargs={'user_id': user_id, 'application_id': application_id})
+
+    def user_passes_test(self,request):
+        if request.user.is_authenticated: 
+            self.object = self.get_object()
+            return self.object.user == request.user 
+        return False 
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not self.user_passes_test(request):
+            raise PermissionDenied
+        return super(Application_ComponentDelete, self).dispatch(
+            request, *args, **kwargs)
+
+class Component_NoteDelete(LoginRequiredMixin, DeleteView): #delete confirmation 
+    model = Component_Note
+
+    def get_success_url(self): 
+        user_id = self.object.user_id
+        component = self.object.component
+        return reverse('applications_detail', kwargs={'user_id': user_id, 'application_id': component.application_id})
+
+    def user_passes_test(self,request):
+        if request.user.is_authenticated: 
+            self.object = self.get_object()
+            return self.object.user == request.user 
+        return False 
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not self.user_passes_test(request):
+            raise PermissionDenied
+        return super(Component_NoteDelete, self).dispatch(
+            request, *args, **kwargs)
+
+@login_required
+def add_note(request, user_id, application_id, component_id): 
+    form = Component_NoteForm(request.POST)
+    if form.is_valid():
+        new_note = form.save(commit=False)
+        new_note.component_id = component_id
+        new_note.user_id = request.user.id 
+        new_note.save()
+    return redirect('applications_detail', user_id = user_id, application_id=application_id)
+
+@login_required
+def add_component(request, user_id, application_id): 
+    form = Application_ComponentForm(request.POST)
+    if form.is_valid():
+        new_component = form.save(commit=False)
+        new_component.application_id = application_id
+        new_component.user_id = request.user.id 
+        new_component.save()
+    return redirect('applications_detail', user_id = user_id, application_id=application_id)
