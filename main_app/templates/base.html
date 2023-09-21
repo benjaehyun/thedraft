@@ -34,10 +34,10 @@
                             <a class="nav-link" href="{% url 'company_index' %}">View Companies</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                            <a class="nav-link" href="{% url 'profile' user.id %}">My Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'profile' user.id %}">My Profile</a>
+                            <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
