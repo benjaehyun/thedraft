@@ -1,51 +1,45 @@
-{% extends 'base.html' %}
+{% extends 'company-base.html' %}
 {% block content %}
 
-<h1> {{ company.name }}</h1>
-<h3> {{company.industry}} </h3>
-<a href="{{company.url}}" target="_blank" rel="noopener noreferrer"> Link to Company's Job Postings</a>
-<p> {{company.description}} </p>
-
-{% if user.is_authenticated %}
-  <a href="{% url 'company_subforums_new' company.id %}">
-    <button class="btn btn-primary btn-lg">Create A Subforum</button>
-  </a>
-{% endif %}
+<div style="background-image: url('{{ company.photo_url }}'); background-repeat:no-repeat; background-size: cover; height: 60vmin; margin-top: 0; display:flex; align-items: center; ">
+  <div class="m-4 p-4" style="background-color: rgba(255, 255, 255, 0.8); border-radius: 0.5em; ">
+    <h1> {{ company.name }}</h1>
+    <h3> {{company.industry}} </h3>
+    <a href="{{company.url}}" target="_blank" rel="noopener noreferrer"> Link to Company's Job Postings</a>
+    <p> {{company.description}} </p>
+    {% if user.is_authenticated %}
+    <a href="{% url 'company_subforums_new' company.id %}">
+      <button class="btn-add mb-3" style="border-radius: 0.5em;">Create A Subforum</button>
+    </a>
+    {% endif %}
+  </div>
+</div>
 
 {% for subforum in company.company_subforum_set.all %}
   {% if subforum.pinned %}
-  <a href="{% url 'company_subforums_detail' company.id subforum.id %}">
-      <div class="card mb-3">
-          <div class="card-body forum-card">
-              <h5 class="card-title">{{ subforum.title }}</h5>
-              <p class="card-text">{{ subforum.date }}</p>
-              <p class="card-text">{{ subforum.company_subforum_likes_set.all|length }}</p>
-          </div>
+    <a href="{% url 'company_subforums_detail' company.id subforum.id %}">
+      <div class="card m-3 mx-6 p-4" style="border-radius: 0.5em;">
+        <div style="display: flex;">
+            <span class="pin-icon" style="padding-top: 0.3rem;">&#x1F4CC;</span> <!-- Add a pin icon here -->
+            <h5 class="card-title" style="margin-left: 1rem;">{{ subforum.title }}</h5>
+        </div>
+        <p class="card-text">{{ subforum.date }}</p>
+        <p class="card-text">Likes: {{ subforum.company_subforum_likes_set.all|length }}</p>
       </div>
-  </a>
-  {% endif %}
+    </a>
+  {% endif %} 
 {% endfor %}
 
 {% for subforum in company.company_subforum_set.all %}
   {% if subforum.pinned == False %}
   <a href="{% url 'company_subforums_detail' company.id subforum.id %}">
-      <div class="card mb-3">
-          <div class="card-body forum-card">
-              <h5 class="card-title">{{ subforum.title }}</h5>
-              <p class="card-text">{{ subforum.date }}</p>
-              <p class="card-text">{{ subforum.company_subforum_likes_set.all|length }}</p>
-          </div>
+      <div class="card m-3 mx-6 p-4" style="border-radius: 0.5em;">
+          <h5 class="card-title">{{ subforum.title }}</h5>
+          <p class="card-text">{{ subforum.date }}</p>
+          <p class="card-text">Likes: {{ subforum.company_subforum_likes_set.all|length }}</p>
       </div>
   </a>
   {% endif %}
 {% endfor %}
 
-<div class="row">
-  
-    <div class="card">
-      <div class="card-content">
-      </div>
-    </div>
- 
-</div>
 {% endblock %}

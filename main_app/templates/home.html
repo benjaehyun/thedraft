@@ -17,21 +17,23 @@
 
 {% if user.is_authenticated %}
     <a href="{% url 'subforums_new' %}">
-        <button class="btn-create">Create A Subforum</button>
+        <button class="btn-add mb-3" style="border-radius: 0.5em;">Create A Subforum</button>
     </a>
 {% endif %}
 
 {% for subforum in subforums|dictsortreversed:"pinned" %}
     <a href="{% url 'subforums_detail' subforum.id %}">
-        <div class="card mb-3">
-            <div class="card-body forum-card">
+        <div class="card mb-3 p-4" style="border-radius: 0.5em;">
+            <div style="display: flex;">
                 {% if subforum.pinned %}
-                    <span class="pin-icon">&#x1F4CC;</span> <!-- Add a pin icon here -->
-                {% endif %}
+                <span class="pin-icon" style="padding-top: 0.3rem;">&#x1F4CC;</span> <!-- Add a pin icon here -->
+                <h5 class="card-title" style="margin-left: 1rem;">{{ subforum.title }}</h5>
+                {% else %}
                 <h5 class="card-title">{{ subforum.title }}</h5>
-                <p class="card-text">{{ subforum.date }}</p>
-                <p class="card-text">{{ subforum.subforum_likes_set.all | length }}</p>
+                {% endif %} 
             </div>
+            <p class="card-text">{{ subforum.date }}</p>
+            <p class="card-text">Likes: {{ subforum.subforum_likes_set.all | length }}</p>
         </div>
     </a>
 {% endfor %}

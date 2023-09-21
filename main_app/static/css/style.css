@@ -9,9 +9,7 @@ html {
 
 h1 {
     font-size: 3.5vw; 
-    margin-top: 0;
-    margin-bottom: 5vw; 
-    /* color: #333; */
+
 }
 
 /* p {
@@ -33,11 +31,11 @@ h1 {
     border: none;
     border-radius: 0.3125rem; /* Rounded corners */
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-bottom: 1rem; /
+    transition: background-color 0.3s ease; 
+    color:white;
 }
 .btn-delete {
-    background-color: #d94141;
+    background-color: #F76C6C;
     padding: 0.1rem .25rem; 
     font-size: 0.6rem; 
     border-radius: 0.25rem; 
@@ -55,9 +53,6 @@ h1 {
 }
 h2 {
     font-size: 2.5vw; 
-    margin-top: 0;
-    margin-bottom: 5vw; 
-    /* color: #333; */
     font-weight: bold;
 }
 
@@ -103,6 +98,7 @@ body {
 
 #post-body {
     background-color: #A8D0E6;
+    border-radius: 0.5rem;
 }
 
 .card-body {
@@ -110,18 +106,6 @@ body {
     background-color: #374785;
 }
 
-
-.btn-create-subforum {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 0.3125rem; /* 5px => 0.3125rem */
-    padding: 1rem 1.25rem; /* 10px 20px => 0.625rem 1.25rem */
-    font-size: 1.125rem; /* 18px => 1.125rem */
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-bottom: 1.25rem; /* 20px => 1.25rem */
-}
 
 .btn-create-subforum:hover {
     background-color: #0056b3;
@@ -208,11 +192,14 @@ form>p {
     align-items: center;
 }
 
+p>label{
+    margin-right: 1.5vmax;
+}
+
 .page-footer {
     background-color: #A8D0E6;
     color: #ffffff;
     padding: 2vw; 
-    margin-top: 5vw;
     text-align: center;
     font-size: 1.75vw; 
     width: 100%;
