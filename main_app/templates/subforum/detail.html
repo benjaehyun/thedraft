@@ -10,10 +10,10 @@
     {% for photo in subforum.photo_set.all %}
         <img src=" {{ photo.url }} " alt="">
     {% empty %}
-    <div>No Photos Uploaded</div>
+        <div>No Photos Uploaded</div>
     {% endfor %}
     {% if user == subforum.user %}
-        <form action=" {% url 'subforums_update' subforum.id %} ">
+        <form class="my-2" action=" {% url 'subforums_update' subforum.id %} ">
             {% csrf_token %}
             <input type="submit" class="btn btn-primary" value="Edit Subforum">
         </form>
