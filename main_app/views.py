@@ -389,7 +389,6 @@ class Company_PostDelete(LoginRequiredMixin, DeleteView): #delete confirmation
             request, *args, **kwargs)
 
 
-
 def signup(request): 
     error_message = ''
     if request.method == 'POST': 
@@ -424,34 +423,35 @@ def applications_create(request, user_id):
             new_application = form.save(commit=False)
             new_application.user_id = request.user.id #this might not work
             new_application.save()
-        request_files = request.FILES.getlist('pdf-file', None)
-        print(f'request_files: {request_files}')
-        for pdf_file in request_files:
-            print(f'pdffile: {pdf_file} ')
-            if pdf_file:
-                s3 = boto3.client('s3')
-                key = uuid.uuid4().hex[:6] + pdf_file.name[pdf_file.name.rfind('.'):]
-                try:
-                    bucket = os.environ['S3_BUCKET']
-                    print(f'bucket: {bucket} ')
-                    s3.upload_fileobj(pdf_file, bucket, key)
-                    url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
-                    print(f'url: {url} ')
-                    Pdf.objects.create(url=url, job_application=new_application)
-                except Exception as e:
-                    print('An error occurred uploading file to S3')
-                    print(e)
-        return redirect('applications_detail', user_id=user_id, pk=new_application.id)
+        pdf_file = request.FILES.get('pdf-file', None)
+        print(f'pdffile: {pdf_file} ')
+        if pdf_file:
+            s3 = boto3.client('s3')
+            key = uuid.uuid4().hex[:6] + pdf_file.name[pdf_file.name.rfind('.'):]
+            try:
+                bucket = os.environ['S3_BUCKET']
+                print(f'bucket: {bucket} ')
+                s3.upload_fileobj(pdf_file, bucket, key)
+                url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+                print(f'url: {url} ')
+                Pdf.objects.create(url=url, job_application=new_application, user=request.user)
+            except Exception as e:
+                print('An error occurred uploading file to S3')
+                print(e)
+        return redirect('applications_detail', user_id=user_id, application_id=new_application.id)
     except Exception as e: 
         return HttpResponseServerError(e)
 
 
 def applications_detail(request, user_id, application_id): 
     application = Job_Application.objects.get(id=application_id)
+    pdf = Pdf.objects.get(job_application=application_id) 
     note_form = Component_NoteForm()
     component_form = Application_ComponentForm()
+    print(f'pdf: {pdf.url}')
     return render(request, 'profile/application/detail.html', {
         'application': application, 
+        'pdf': pdf,
         'note_form': note_form, 
         'component_form': component_form
         })
