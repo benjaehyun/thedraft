@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Home Page</h1>
 
 <section class="about-us">
     <h2>About Us</h2>
@@ -17,22 +16,23 @@
 
 {% if user.is_authenticated %}
     <a href="{% url 'subforums_new' %}">
-        <button class="btn btn-primary btn-lg">Create A Subforum</button>
+        <button class="btn-create">Create A Subforum</button>
     </a>
 {% endif %}
 
-{% for subforum in subforums %}
-    {% if subforum.pinned %}
-        <a href="{% url 'subforums_detail' subforum.id %}">
-            <div class="card mb-3">
-                <div class="card-body forum-card">
-                    <h5 class="card-title">{{ subforum.title }}</h5>
-                    <p class="card-text">{{ subforum.date }}</p>
-                    <p class="card-text">{{ subforum.likes }}</p>
-                </div>
+{% for subforum in subforums|dictsortreversed:"pinned" %}
+    <a href="{% url 'subforums_detail' subforum.id %}">
+        <div class="card mb-3">
+            <div class="card-body forum-card">
+                {% if subforum.pinned %}
+                    <span class="pin-icon">&#x1F4CC;</span> <!-- Add a pin icon here -->
+                {% endif %}
+                <h5 class="card-title">{{ subforum.title }}</h5>
+                <p class="card-text">{{ subforum.date }}</p>
+                <p class="card-text">{{ subforum.likes }}</p>
             </div>
-        </a>
-    {% endif %}
+        </div>
+    </a>
 {% endfor %}
 
 {% for subforum in subforums %}
