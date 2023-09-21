@@ -91,7 +91,7 @@ class Comment(models.Model):
 class Company(models.Model): 
     name =  models.CharField(max_length=100)
     description = models.TextField(max_length=500)
-    url = models.CharField(max_length=150)
+    url = models.CharField(max_length=150, verbose_name='Company Job Postings URL')
     industry = models.CharField(max_length=100)
     photo_url = models.CharField(max_length=150)
 
