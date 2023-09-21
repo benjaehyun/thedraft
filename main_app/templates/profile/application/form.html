@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Add Job Application</h1>
+  <form action=" {% url 'applications_create' user.id %} " enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    {{ application_form.as_p }}
+    <input type="file" name="pdf-file">
+    <button type="submit" class="btn btn-primary">Add Application</button>
+  </form>
+{% endblock %}

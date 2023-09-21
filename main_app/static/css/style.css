@@ -98,6 +98,7 @@ body {
 }
 
 .about-us>p {
+
     font-family: "ohno-softie-variable",sans-serif;
     font-variation-settings: 'wght' 500;
     color: white;
@@ -111,6 +112,22 @@ body {
 .card-body {
     /* background-color:#374785 */
     background-color: #FFA9A9;
+
+    font-family: "transducer-variable", sans-serif;
+    font-variation-settings: "slnt" 0, "wdth" 100, "wght" 100;
+}
+
+
+.btn-create-subforum {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 0.3125rem; /* 5px => 0.3125rem */
+    padding: 1rem 1.25rem; /* 10px 20px => 0.625rem 1.25rem */
+    font-size: 1.125rem; /* 18px => 1.125rem */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 1.25rem; /* 20px => 1.25rem */
 }
 
 .btn-create-subforum:hover {
@@ -181,6 +198,7 @@ body {
     position: absolute;
 }
 
+
 .signup {
     background-color: #FFD700; 
     color: #fff; 
@@ -194,4 +212,22 @@ body {
 .signup:hover {
     background-color: #FFC800; /* Lighter yellow on hover */
     color: #fff; 
+  }
+  
+.collapse {
+    &:not(.show) {
+      display: none;
+    }
+}
+
+.collapsing {
+    height: 0;
+    overflow: hidden;
+    @include transition($transition-collapse);
+
+    &.collapse-horizontal {
+        width: 0;
+        height: auto;
+        @include transition($transition-collapse-width);
+    }
 }

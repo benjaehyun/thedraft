@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col">
+            <h1>{{ application.company }}</h1>
+            <h3>Status: {{ application.get_status_display }}</h3>
+            <h4>Role: {{ application.role }}</h4>
+            <a href="{{ application.url }}" target="_blank" rel="noopener noreferrer"> Link to Job Posting</a>
+            <p> Salary: {{ application.salary }} </p>
+            <p> Date: {{ application.date }} </p>
+            <p> Location: {{ application.location }} </p>
+            <p> {{ application.description }} </p>
+            <a href=" {% url 'applications_update' user.id application.id %} ">
+                <button class="btn btn-primary btn-lg">Update This Application</button>
+            </a>
+            {% if user == application.user %}
+                <form action=" {% url 'status_update' user.id application.id %} " method="POST">
+                    {% csrf_token %}
+                    {{ status_form.as_p }}
+                    <input type="submit" class="btn" value="Update Status">
+                </form>
+            {% endif %}
+            <div id="viewer">
+                <button id="prev">Previous</button>
+                <button id="next">Next</button>
+                <p>Page: <span id="page_num"></span> / <span id="page_count"></span></p>
+                <canvas id="pdf-canvas"></canvas>
+            </div>
+                    <!-- figure out the way that we're going to display the pdf -->
+            {% if user == application.user %}
+                <form action=" {% url 'applications_delete' user.id application.id %} ">
+                    {% csrf_token %}
+                    <input type="submit" class="btn" value="Delete Job Application">
+                </form>
+            {% endif %}
+            
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col">
+            <!-- the a tag for creating application component -->
+            {% for component in application.application_component_set.all %}
+            <!-- stopping point -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"> Component: {{ component.type }} </h5>
+                    <small>Date: {{ component.date }}</small>
+                    <small>Contact(s): {{ component.contact }}</small>
+                    <p>Description: {{ component.description }}</p>
+                    {% if user == component.user %}
+                        <form action=" {% url 'delete_component' user.id application.id component.id %} ">
+                            {% csrf_token %}
+                            <input type="submit" class="btn" value="Delete Component">
+                        </form>
+                    {% endif %}
+
+                </div>
+                <div class="card-content">
+                    {% for note in component.component_note_set.all %}
+                        <p>Note: {{ note.content }} </p>
+                        <small> Created On: {{ note.date }} </small>
+                        {% if user == note.user %}
+                            <form action=" {% url 'delete_note' user.id application.id component.id note.id %} ">
+                                {% csrf_token %}
+                                <input type="submit" class="btn" value="Delete Note">
+                            </form>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div>
+                    {% if user.is_authenticated %}
+                        <form action=" {% url 'add_note' user.id application.id component.id %} " method="POST">
+                            {% csrf_token %}
+                            {{ note_form.as_p }}
+                            <input type="submit" class="btn" value="Add A Note">
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col">
+            <h2>Add a Component</h2>
+            {% if user.is_authenticated %}
+                <form action="{% url 'add_component' user.id application.id %}" method="POST">
+                    {% csrf_token %}
+                    {{ component_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Add Component</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% block script %}
+
+<script type="text/javascript">
+    // Configure PDF.js
+    var url = '{{ pdf.url }}';
+    var pdfjsWorkerSrc = '{% static "build/pdf.worker.js" %}';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorkerSrc;
+
+    var pdfDocument = null;  // Will store the loaded PDF document
+    var pageNumber = 1;  // Start with the first page
+
+    function renderPage(num) {
+        // Fetch the page
+        pdfDocument.getPage(num).then(function(page) {
+            console.log('Page loaded');
+
+            var canvas = document.getElementById('pdf-canvas');
+            var context = canvas.getContext('2d');
+
+            // Render the page
+            var viewport = page.getViewport({ scale: 1 });  // Adjust the scale as needed
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            var renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+
+            page.render(renderContext).promise.then(function() {
+                console.log('Page rendered');
+                document.getElementById('page_num').textContent = num;  // Update current page number
+            });
+        });
+    }
+
+    // Load the PDF
+    var loadingTask = pdfjsLib.getDocument(url);
+    loadingTask.promise.then(function(pdf) {
+        console.log('PDF loaded');
+
+        pdfDocument = pdf;  // Store the loaded PDF document globally
+        document.getElementById('page_count').textContent = pdfDocument.numPages;  // Display total page count
+
+        // Initial render of the first page
+        renderPage(pageNumber);
+    });
+
+    // Event listeners for the buttons
+    document.getElementById('prev').addEventListener('click', function() {
+        if (pageNumber <= 1) return;  // Return if on the first page
+        pageNumber--;
+        renderPage(pageNumber);
+    });
+
+    document.getElementById('next').addEventListener('click', function() {
+        if (pageNumber >= pdfDocument.numPages) return;  // Return if on the last page
+        pageNumber++;
+        renderPage(pageNumber);
+    });
+</script>
+
+{% endblock %}
+{% endblock %}
