@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from .models import Subforum, Post, Company, Company_Subforum, Company_Post, Comment, Company_Comment, Photo, Company_Photo, Subforum_Likes, Company_Subforum_Likes, Job_Application, Pdf, Application_Component, Component_Note
-from .forms import PostForm, CommentForm, Company_PostForm, Company_CommentForm, Company_SubforumForm, SubforumForm, Job_ApplicationForm, Component_NoteForm, Application_ComponentForm
+from .forms import PostForm, CommentForm, Company_PostForm, Company_CommentForm, Company_SubforumForm, SubforumForm, Job_ApplicationForm, Component_NoteForm, Application_ComponentForm, StatusForm
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -15,9 +15,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 
-
-# Other View Functions
-# Home view function is a Subforum index
 def home(request): 
     subforums = Subforum.objects.all()
     return render(request, 'home.html', { 
@@ -26,15 +23,6 @@ def home(request):
 
 def about(request): 
     return render(request, 'about.html')
-
-# Subforum CRUD Views
-# class SubforumCreate(LoginRequiredMixin, CreateView): 
-#     model = Subforum
-#     fields = ['title', 'pinned']
-
-#     def form_valid(self, form): 
-#         form.instance.user = self.request.user
-#         return super().form_valid(form)
 
 @login_required
 def subforums_new(request): 
@@ -204,23 +192,6 @@ class CompanyCreate(LoginRequiredMixin, CreateView):
     fields = '__all__'
     template_name = "company/form.html"
 
-# Company_Subforum CRUD Views
-# def company_subforum_create(request, company_id):
-#     form = Company_SubforumForm(request.POST)
-#     if form.is_valid(): 
-#         new_company_subforum = form.save(commit=False)
-#         new_company_subforum.company_id = company_id
-#         new_company_subforum.save()
-#     return redirect('company/detail.html', company_id = company_id)
-
-# class Company_SubforumCreate(LoginRequiredMixin, CreateView): 
-#     model = Company_Subforum
-#     fields = ['title', 'pinned', 'content']
-
-#     def form_valid(self, form): 
-#         form.instance.user = self.request.user
-#         form.instance.company = get_object_or_404(Company, pk=self.kwargs['company_id'])
-#         return super().form_valid(form)
 
 @login_required
 def company_subforums_new(request, company_id): 
@@ -278,13 +249,6 @@ class Company_SubforumUpdate(LoginRequiredMixin, UpdateView):
         return super(Company_SubforumUpdate, self).dispatch(
             request, *args, **kwargs)
 
-# Ben handling these
-# def company_subfoums_index(request):
-#     company_subforums = Company_Subforum.objects.all()
-#     # Where should this live? I picked this one because this file already exists
-#     return render(request, 'company_index', {
-#         'company_subforums': company_subforums
-#     }) 
 
 def company_subforums_detail(request, company_id, company_subforum_id): 
     subforum = Company_Subforum.objects.get(id=company_subforum_id)
@@ -389,7 +353,6 @@ class Company_PostDelete(LoginRequiredMixin, DeleteView): #delete confirmation
             request, *args, **kwargs)
 
 
-
 def signup(request): 
     error_message = ''
     if request.method == 'POST': 
@@ -424,35 +387,38 @@ def applications_create(request, user_id):
             new_application = form.save(commit=False)
             new_application.user_id = request.user.id #this might not work
             new_application.save()
-        request_files = request.FILES.getlist('pdf-file', None)
-        print(f'request_files: {request_files}')
-        for pdf_file in request_files:
-            print(f'pdffile: {pdf_file} ')
-            if pdf_file:
-                s3 = boto3.client('s3')
-                key = uuid.uuid4().hex[:6] + pdf_file.name[pdf_file.name.rfind('.'):]
-                try:
-                    bucket = os.environ['S3_BUCKET']
-                    print(f'bucket: {bucket} ')
-                    s3.upload_fileobj(pdf_file, bucket, key)
-                    url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
-                    print(f'url: {url} ')
-                    Pdf.objects.create(url=url, job_application=new_application)
-                except Exception as e:
-                    print('An error occurred uploading file to S3')
-                    print(e)
-        return redirect('applications_detail', user_id=user_id, pk=new_application.id)
+        pdf_file = request.FILES.get('pdf-file', None)
+        print(f'pdffile: {pdf_file} ')
+        if pdf_file:
+            s3 = boto3.client('s3')
+            key = uuid.uuid4().hex[:6] + pdf_file.name[pdf_file.name.rfind('.'):]
+            try:
+                bucket = os.environ['S3_BUCKET']
+                print(f'bucket: {bucket} ')
+                s3.upload_fileobj(pdf_file, bucket, key)
+                url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+                print(f'url: {url} ')
+                Pdf.objects.create(url=url, job_application=new_application, user=request.user)
+            except Exception as e:
+                print('An error occurred uploading file to S3')
+                print(e)
+        return redirect('applications_detail', user_id=user_id, application_id=new_application.id)
     except Exception as e: 
         return HttpResponseServerError(e)
 
 
 def applications_detail(request, user_id, application_id): 
     application = Job_Application.objects.get(id=application_id)
+    pdf = Pdf.objects.get(job_application=application_id) 
     note_form = Component_NoteForm()
+    status_form = StatusForm()
     component_form = Application_ComponentForm()
+    print(f'pdf: {pdf.url}')
     return render(request, 'profile/application/detail.html', {
         'application': application, 
+        'pdf': pdf,
         'note_form': note_form, 
+        'status_form':status_form,
         'component_form': component_form
         })
 
@@ -534,3 +500,34 @@ def add_component(request, user_id, application_id):
         new_component.user_id = request.user.id 
         new_component.save()
     return redirect('applications_detail', user_id = user_id, application_id=application_id)
+
+class Job_ApplicationUpdate(LoginRequiredMixin, UpdateView): 
+    model = Job_Application
+    fields = '__all__'
+
+    def user_passes_test(self,request):
+        if request.user.is_authenticated: 
+            self.object = self.get_object()
+            return self.object.user == request.user 
+        return False 
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not self.user_passes_test(request):
+            raise PermissionDenied
+        return super(Job_ApplicationUpdate, self).dispatch(
+            request, *args, **kwargs)
+    
+@login_required
+def status_update(request, user_id, application_id): 
+    application = Job_Application.objects.get(id=application_id)
+    form = StatusForm(request.POST, instance=application)
+    if form.is_valid():
+        new_status = form.save(commit=False)
+        new_status.save(update_fields= ['status'] )
+    return redirect('applications_detail', user_id = user_id, application_id=application_id)
+
+def liked(request, user_id): 
+    user = request.user
+    return render(request, 'profile/liked.html', {
+        'user': user
+    }  )

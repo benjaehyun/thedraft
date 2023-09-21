@@ -45,3 +45,8 @@ class Application_ComponentForm(ModelForm):
     class Meta: 
         model = Application_Component
         fields = ['type', 'date', 'contact', 'description']
+
+class StatusForm(ModelForm): 
+    class Meta: 
+        model = Job_Application
+        fields = ['status']

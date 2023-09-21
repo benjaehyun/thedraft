@@ -1,7 +1,10 @@
 
+html {
+    position: relative;
+}
 .container {
-    padding: 1.25rem; /* 20px => 1.25rem */
-    background-color: #e4e8ec;
+    padding: 20px;
+    /* background-color: #e4e8ec; */
 }
 
 h1 {
@@ -38,9 +41,10 @@ body {
 }
 
 .about-us>p {
-    font-family: "ohno-softie-variable",sans-serif;
-    font-variation-settings: 'wght' 300;
+    font-family: "transducer-variable", sans-serif;
+    font-variation-settings: "slnt" 0, "wdth" 100, "wght" 100;
 }
+
 
 .btn-create-subforum {
     background-color: #007bff;
@@ -125,24 +129,27 @@ body {
     color: #ffffff;
     padding: 1.25rem; /* 20px => 1.25rem */
     text-align: center;
-    font-size: 0.875rem; /* 14px => 0.875rem */
-    position: fixed;
-    bottom: 0;
+    font-size: 14px;
+    position: absolute;
+    /* bottom: 0; */
     width: 100%;
     border-top: 1px solid #555;
 }
 
-.signup {
-    background-color: #FFD700; /* Yellow background color */
-    color: #fff; /* Text color */
-    padding: .5rem; /* Adjust padding as needed */
-    border-radius: .5rem; /* Rounded corners */
-    transition: background-color 0.3s ease; /* Smooth hover effect */
-    text-decoration: none; /* Remove underlines on links */
+.collapse {
+    &:not(.show) {
+      display: none;
+    }
 }
 
-/* Add a hover effect */
-.signup:hover {
-    background-color: #FFC800; /* Lighter yellow on hover */
-    color: #fff; /* Text color on hover */
+.collapsing {
+    height: 0;
+    overflow: hidden;
+    @include transition($transition-collapse);
+
+    &.collapse-horizontal {
+        width: 0;
+        height: auto;
+        @include transition($transition-collapse-width);
+    }
 }

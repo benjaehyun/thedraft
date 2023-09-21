@@ -32,9 +32,12 @@ urlpatterns = [
     path('profile/<int:user_id>/application/create/', views.applications_create, name='applications_create'),
     path('profile/<int:user_id>/application/<int:application_id>/', views.applications_detail, name='applications_detail'),
     path('profile/<int:user_id>/application/<int:pk>/delete/', views.Job_ApplicationDelete.as_view(), name='applications_delete'),
+    path('profile/<int:user_id>/application/<int:pk>/update/', views.Job_ApplicationUpdate.as_view(), name='applications_update'),
+    path('profile/<int:user_id>/application/<int:application_id>/status_update/', views.status_update, name='status_update'),
     path('profile/<int:user_id>/application/<int:application_id>/add_component/', views.add_component, name='add_component'),
     path('profile/<int:user_id>/application/<int:application_id>/component/<int:pk>/delete/', views.Application_ComponentDelete.as_view(), name='delete_component'),
     path('profile/<int:user_id>/application/<int:application_id>/component/<int:component_id>/add_note/', views.add_note, name='add_note'),
     path('profile/<int:user_id>/application/<int:application_id>/component/<int:component_id>/note/<int:pk>/delete/', views.Component_NoteDelete.as_view(), name='delete_note'),
+    path('profile/<int:user_id>/liked/', views.liked, name='liked'),
   	path('accounts/signup/', views.signup, name='signup'), 
 ]

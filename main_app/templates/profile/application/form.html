@@ -5,7 +5,7 @@
   <form action=" {% url 'applications_create' user.id %} " enctype="multipart/form-data" method="POST">
     {% csrf_token %}
     {{ application_form.as_p }}
-    <input type="file" name="pdf-file" multiple>
+    <input type="file" name="pdf-file">
     <button type="submit" class="btn btn-primary">Add Application</button>
   </form>
 {% endblock %}
