@@ -1,36 +1,36 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container mt-4">
-    <div class="row">
-            <h1>{{ subforum.title }}</h1>
-            <small>Created: {{ subforum.date }}</small>
-            <small>Likes: <span id="likes"> {{ likes }} </span> </small>
-            <p> {{ subforum.content }} </p>
-            <a href=" {% url 'company_detail' subforum.company.id %} "> {{ subforum.company }} </a>
-            {% for photo in subforum.company_photo_set.all %}
-                <img src=" {{ photo.url }} " alt="">
-            {% empty %}
-            <div>No Photos Uploaded</div>
-            {% endfor %}
-            {% if user == subforum.user %}
-                <form action=" {% url 'company_subforums_update' subforum.company.id subforum.id %} ">
-                    {% csrf_token %}
-                    <input type="submit" class="btn" value="Edit Subforum">
-                </form>
+
+<div class="">
+    <h1>{{ subforum.title }}</h1>
+    <small>Created: {{ subforum.date }}</small>
+    <small>Likes: <span id="likes"> {{ likes }} </span> </small>
+    <p> {{ subforum.content }} </p>
+    <a href=" {% url 'company_detail' subforum.company.id %} "> {{ subforum.company }} </a>
+    {% for photo in subforum.company_photo_set.all %}
+        <img src=" {{ photo.url }} " alt="">
+    {% empty %}
+    <div>No Photos Uploaded</div>
+    {% endfor %}
+    {% if user == subforum.user %}
+        <form  class="my-2" action=" {% url 'company_subforums_update' subforum.company.id subforum.id %} ">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-primary" value="Edit Subforum">
+        </form>
+    {% endif %}
+    <div>
+        <form class="like-button-form" method="POST">
+            {% csrf_token %}
+            {% if is_liked %}
+                <button class="like-button" style="background-color: red;">LIKE</button>
+            {% else %}
+                <button class="like-button" style="background-color: white;" >LIKE</button>
             {% endif %}
-            <div>
-                <form class="like-button-form" method="POST">
-                    {% csrf_token %}
-                    {% if is_liked %}
-                        <button class="like-button" style="background-color: red;">LIKE</button>
-                    {% else %}
-                        <button class="like-button" style="background-color: white;" >LIKE</button>
-                    {% endif %}
-                </form>
-            </div>
-        </div>
+        </form>
     </div>
+</div>
+
     <div class="row mt-4">
         <div class="col">
             {% for post in subforum.company_post_set.all %}

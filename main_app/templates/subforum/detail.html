@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 
+{% load static %}
+
 
 <div class="">
     <h1>{{ subforum.title }}</h1>
-    <small class="text-muted">Created: {{ subforum.date }}</small><br>
-    <small class="text-muted">Likes: <span id="likes"> {{ likes }} </span> </small> 
+    <small>Created: {{ subforum.date }}</small><br>
+    <small>Likes: <span id="likes"> {{ likes }} </span> </small> 
     <p> {{ subforum.content }} </p>
     {% for photo in subforum.photo_set.all %}
         <img src=" {{ photo.url }} " alt="">
@@ -22,9 +24,9 @@
         <form class="like-button-form" method="POST">
             {% csrf_token %}
             {% if is_liked %}
-                <button class="like-button" style="background-color: red;">LIKE</button>
+                <button class="like-button" style="background-color: red; padding: 0;"><img src=" {% static 'images/heart.png' %} " alt="" height="50rem"></button>
             {% else %}
-                <button class="like-button" style="background-color: white;" >LIKE</button>
+                <button class="like-button" style="background-color: white; padding: 0;" ><img src=" {% static 'images/heart.png' %} " alt="" height="50rem"></button>
             {% endif %}
         </form>
     </div>
@@ -59,7 +61,7 @@
                 </div>
             {% endfor %}
             {% if user.is_authenticated %}
-                <form action=" {% url 'add_comment' subforum.id post.id %} " method="POST">
+                <form class="mt-4 mb-2" action=" {% url 'add_comment' subforum.id post.id %} " method="POST">
                     {% csrf_token %}
                     {{ comment_form.as_p }}
                     <input type="submit" class="btn-add" value="Add A Comment">
