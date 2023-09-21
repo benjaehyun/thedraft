@@ -1,15 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Home Page</h1>
+{% load static %}
+
 
 <section class="about-us">
     <h2>About Us</h2>
-    <p> Welcome to The Draft, the ultimate destination for tech enthusiasts and job seekers in the ever-evolving world of technology.
-        More than just a website, we are the #1 global hub for growing tech professionals.
-        Join our thriving community of over 1,000,000 members who leverage The Draft's diverse range of resources.
-        Explore in-depth articles, engage in discussions, access expert insights, and harness AI-powered tools to supercharge your tech career.
-        Whether you're aiming to land your dream job, navigate career transitions, or simply stay updated on industry trends, The Draft is your go-to platform.
+    <p id="about"> Welcome to The Draft, the ultimate destination for tech enthusiasts and job seekers in the ever-evolving world of technology. <br>
+        Engage yourself with in-depth discussions and access expert insights to supercharge your tech career. <br>
+        Whether you're aiming to land your dream job, navigate career transitions, or simply stay updated on industry trends, The Draft is your go-to platform. <br>
         Join us today and embark on a journey to enhance your tech career prospects. </p>
 </section>
 
@@ -48,4 +47,25 @@
     {% endif %}
 {% endfor %}
 
+{% block script %}
+
+<script>
+    
+    const myText = document.getElementById("about")
+
+    function updateText(e) {
+        multiplierWidth = e.offsetX / window.innerWidth;
+        multiplierHeight = e.offsetY / window.innerHeight;
+        randomWeight =  multiplierWidth * (700 - 100) + 500;
+        randomWidth =  multiplierHeight * (100 - 50) + 150;
+        // myText.style.fontVariationSettings = "\"wght\" " + randomWeight + ", \"wdth\" " + randomWidth;
+        myText.style.fontVariationSettings = "\"wght\" " + randomWeight;
+    }
+    window.addEventListener("mousemove", updateText)
+
+    const collapseElementList = document.querySelectorAll('.collapse')
+    const collapseList = [...collapseElementList].map(collapseEl => new bootstrap.Collapse(collapseEl))
+</script>
+
+{% endblock %}
 {% endblock %}

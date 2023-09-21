@@ -1,7 +1,10 @@
 
+html {
+    position: relative;
+}
 .container {
     padding: 20px;
-    background-color: #e4e8ec;
+    /* background-color: #e4e8ec; */
 }
 
 h1 {
@@ -31,9 +34,10 @@ body {
 }
 
 .about-us>p {
-    font-family: "ohno-softie-variable",sans-serif;
-    font-variation-settings: 'wght' 300;
+    font-family: "transducer-variable", sans-serif;
+    font-variation-settings: "slnt" 0, "wdth" 100, "wght" 100;
 }
+
 
 .btn-create-subforum {
     background-color: #007bff; 
@@ -117,8 +121,26 @@ body {
     padding: 20px;
     text-align: center;
     font-size: 14px;
-    position: fixed;
-    bottom: 0;
+    position: absolute;
+    /* bottom: 0; */
     width: 100%;
     border-top: 1px solid #555;
+}
+
+.collapse {
+    &:not(.show) {
+      display: none;
+    }
+}
+
+.collapsing {
+    height: 0;
+    overflow: hidden;
+    @include transition($transition-collapse);
+
+    &.collapse-horizontal {
+        width: 0;
+        height: auto;
+        @include transition($transition-collapse-width);
+    }
 }

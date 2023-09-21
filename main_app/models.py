@@ -217,7 +217,7 @@ class Job_Application(models.Model):
         return self.role
     
     def get_absolute_url(self): 
-        return reverse('applications_detail', kwargs= {'application_id': self.id} )
+        return reverse('applications_detail', kwargs= {'user_id': self.user_id, 'application_id': self.id} )
     
 class Application_Component(models.Model): 
     type = models.CharField(max_length=150)

@@ -6,14 +6,23 @@
     <div class="row">
         <div class="col">
             <h1>{{ application.company }}</h1>
-            <h3>Status: {{ application.status }}</h3>
+            <h3>Status: {{ application.get_status_display }}</h3>
             <h4>Role: {{ application.role }}</h4>
             <a href="{{ application.url }}" target="_blank" rel="noopener noreferrer"> Link to Job Posting</a>
             <p> Salary: {{ application.salary }} </p>
             <p> Date: {{ application.date }} </p>
             <p> Location: {{ application.location }} </p>
             <p> {{ application.description }} </p>
-            
+            <a href=" {% url 'applications_update' user.id application.id %} ">
+                <button class="btn btn-primary btn-lg">Update This Application</button>
+            </a>
+            {% if user == application.user %}
+                <form action=" {% url 'status_update' user.id application.id %} " method="POST">
+                    {% csrf_token %}
+                    {{ status_form.as_p }}
+                    <input type="submit" class="btn" value="Update Status">
+                </form>
+            {% endif %}
             <div id="viewer">
                 <button id="prev">Previous</button>
                 <button id="next">Next</button>
@@ -39,7 +48,7 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title"> Component: {{ component.type }} </h5>
-                    <small>Created: {{ component.date }}</small>
+                    <small>Date: {{ component.date }}</small>
                     <small>Contact(s): {{ component.contact }}</small>
                     <p>Description: {{ component.description }}</p>
                     {% if user == component.user %}
