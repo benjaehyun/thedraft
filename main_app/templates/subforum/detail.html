@@ -2,17 +2,18 @@
 {% block content %}
 
 <div class="container mt-4">
-    <div class="row">
+    <div class="row-content">
         <div class="col">
             <h1>{{ subforum.title }}</h1>
-            <small>Created: {{ subforum.date }}</small>
-            <small>Likes: <span id="likes"> {{ likes }} </span> </small> 
+            <small class="text-muted">Created: {{ subforum.date }}</small><br>
+            <small class="text-muted">Likes: <span id="likes"> {{ likes }} </span> </small> 
             <p> {{ subforum.content }} </p>
             {% for photo in subforum.photo_set.all %}
                 <img src=" {{ photo.url }} " alt="">
             {% empty %}
             <div>No Photos Uploaded</div>
             {% endfor %}
+            </div>
             {% if user == subforum.user %}
                 <form action=" {% url 'subforums_update' subforum.id %} ">
                     {% csrf_token %}
@@ -37,28 +38,30 @@
             {% for post in subforum.post_set.all %}
             <div class="card mb-3">
                 <div class="card-body">
-                    <h5 class="card-title">Post by User {{ post.user }} </h5>
-                    <small>Created: {{ post.date }}</small>
+                    <h5 class="card-title">Post by User: {{ post.user }} </h5>
+                    <small>Created: {{ post.date }}</small><br>
                     <small>Likes: {{ post.likes }}</small>
                     <p>{{ post.content }}</p>
                     {% if user == post.user %}
                         <form action=" {% url 'delete_post' subforum.id post.id %} ">
                             {% csrf_token %}
-                            <input type="submit" class="btn" value="Delete Post">
+                            <input type="submit" class="btn-delete" value="Delete Post">
                         </form>
                     {% endif %}
                 </div>
-                <div class="card-content">
+                <div class="comment-container">
                     {% for comment in post.comment_set.all %}
-                        <p> {{ comment.user }} Commented:</p>
-                        <p> {{ comment.content }} </p>
-                        <small> {{ comment.date }} </small>
+                        <div class="comment">
+                        <p > {{ comment.user }} Commented:<br>
+                            {{ comment.date }} <br>
+                            {{ comment.content }} </p>
                         {% if user == comment.user %}
                             <form action=" {% url 'delete_comment' subforum.id post.id comment.id %} ">
                                 {% csrf_token %}
-                                <input type="submit" class="btn" value="Delete Comment">
+                                <input type="submit" class="btn-delete" value="Delete Comment">
                             </form>
                         {% endif %}
+                        </div>
                     {% endfor %}
                 </div>
                 <div>
@@ -66,7 +69,7 @@
                         <form action=" {% url 'add_comment' subforum.id post.id %} " method="POST">
                             {% csrf_token %}
                             {{ comment_form.as_p }}
-                            <input type="submit" class="btn" value="Add A Comment">
+                            <input type="submit" class="btn-add" value="Add A Comment">
                         </form>
                     {% endif %}
                 </div>

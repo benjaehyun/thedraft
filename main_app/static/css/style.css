@@ -1,46 +1,118 @@
+.container {
+    padding: 2vw;
+    background-color: rgba(47, 79, 79, 0.71);
+}
 
 html {
     position: relative;
 }
-.container {
-    padding: 20px;
-    /* background-color: #e4e8ec; */
-}
 
 h1 {
-    font-size: 2.25rem; /* 36px => 2.25rem */
+    font-size: 3.5vw; 
     margin-top: 0;
-    margin-bottom: 1.25rem; /* 20px => 1.25rem */
+    margin-bottom: 5vw; 
     color: #333;
 }
 
-.btn-delete {
-    background-color: #d94141
-}
-.btn {
-    background-color: #007bff
+p {
+    /* border: 1px solid rgba(47, 79, 79, 0.71); */
+    /* padding: 10px;  */
+    /* background-color: #f5f5f5;  */
     
 }
+
+.row-content > p {
+    background-color: #FFA9A9;
+}
+
+.comment-container {
+    margin-top: 10px; 
+}
+.comment {
+    background-color: #f5f5f5; 
+    padding: 10px; 
+    border: 1px solid #060606; 
+    border-radius: 5px; 
+    margin-top: 10px; 
+}
+
+.btn-add {
+    background-color: #007bff;
+    padding: 0.5rem 1rem; 
+    font-size: 1rem; 
+    border: none;
+    border-radius: 0.3125rem; /* Rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 1rem; /
+}
+.btn-delete {
+    background-color: #d94141;
+    padding: 0.1rem .25rem; 
+    font-size: 0.6rem; 
+    border-radius: 0.25rem; 
+
+}
+.btn-create {
+    background-color: #007bff;
+    padding: 0.5rem 1rem; 
+    font-size: 1rem; 
+    border: none;
+    border-radius: 0.3125rem; /* Rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 1rem; 
+}
 h2 {
-    font-size: 1.5rem; /* 24px => 1.5rem */
+    font-size: 2.5vw; 
     margin-top: 0;
-    margin-bottom: 1.25rem; /* 20px => 1.25rem */
+    margin-bottom: 5vw; 
     color: #333;
+    font-weight: bold;
 }
 
-h1, h2 {
-    /* font-family: 'Times New Roman', sans-serif; */
-    text-align: center; /* Center horizontally */
+#id_content {
+    width: 50%; /* Adjust the width as needed */
+    height: 20%;
+    padding: 10px; /* Add some padding to the content box */
+    margin: 10px;
+    border: 1px solid #000; 
 }
-
 
 body {
     font-family: "greycliff-cf", sans-serif;
     font-weight: 400;
     font-style: normal;
 }
+.about-us {
+    background-image: url('https://i.imgur.com/4GoS94r.jpg');
+    background-color: rgba(255, 255, 255, .8);
+    background-repeat: no-repeat; 
+    background-size: cover; 
+    background-position: center;
+}
+.about-us>h2 {
+    margin-right: 5vw;
+    font-weight: bold;
+    color: white;
+}
 
 .about-us>p {
+
+    font-family: "ohno-softie-variable",sans-serif;
+    font-variation-settings: 'wght' 500;
+    color: white;
+}
+
+.row-content{
+    background-color: #f0f0f0;
+    padding: 20px;
+    border: 1px solid #ddd;
+}
+.card-body {
+    /* background-color:#374785 */
+    background-color: #FFA9A9;
+
     font-family: "transducer-variable", sans-serif;
     font-variation-settings: "slnt" 0, "wdth" 100, "wght" 100;
 }
@@ -72,40 +144,30 @@ body {
     color: #333;
 }
 
-/* Forum Card Styles */
-.forum-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 0.3125rem; /* 5px => 0.3125rem */
-    padding: 0.9375rem; /* 15px => 0.9375rem */
-    margin-bottom: 1.25rem; /* 20px => 1.25rem */
-    box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
-}
 
 .forum-card:hover {
     box-shadow: 0 0.375rem 0.5rem rgba(0, 0, 0, 0.2);
 }
 
 .card-title {
-    font-size: 1.5rem; /* 24px => 1.5rem */
-    margin-bottom: 0.625rem; /* 10px => 0.625rem */
+    font-size: 1.5rem; 
+    margin-bottom: 0.625rem; 
     color: #333;
 }
 
 .card-text {
-    font-size: 1rem; /* 16px => 1rem */
+    font-size: 1rem;
     color: #777;
 }
 
 .navbar-footer-style {
-    background-color: #4c99e5 !important;
+    background-color: #A8D0E6 !important;
     color: #ffffff !important;
 }
 
 /* Override Bootstrap dropdown background */
 .navbar-footer-style .navbar-collapse {
-    background-color: #4c99e5 !important;
+    background-color: #A8D0E6 !important;
 }
 
 /* Remove any box-shadow or border */
@@ -125,17 +187,33 @@ body {
 }
 
 .page-footer {
-    background-color: #4c99e5;
+    background-color: #A8D0E6;
     color: #ffffff;
-    padding: 1.25rem; /* 20px => 1.25rem */
+    padding: 2vw; 
+    margin-top: 5vw;
     text-align: center;
-    font-size: 14px;
-    position: absolute;
-    /* bottom: 0; */
+    font-size: 1.75vw; 
     width: 100%;
     border-top: 1px solid #555;
+    position: absolute;
 }
 
+
+.signup {
+    background-color: #FFD700; 
+    color: #fff; 
+    padding: 2.5vw; 
+    border-radius: 2.5vw; /* Rounded corners */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+    text-decoration: none; /* Remove underlines on links */
+}
+
+
+.signup:hover {
+    background-color: #FFC800; /* Lighter yellow on hover */
+    color: #fff; 
+  }
+  
 .collapse {
     &:not(.show) {
       display: none;
