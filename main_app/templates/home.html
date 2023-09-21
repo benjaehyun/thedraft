@@ -30,25 +30,13 @@
                 {% endif %}
                 <h5 class="card-title">{{ subforum.title }}</h5>
                 <p class="card-text">{{ subforum.date }}</p>
-                <p class="card-text">{{ subforum.likes }}</p>
+                <p class="card-text">{{ subforum.subforum_likes_set.all | length }}</p>
             </div>
         </div>
     </a>
 {% endfor %}
 
-{% for subforum in subforums %}
-    {% if subforum.pinned == False %}
-        <a href="{% url 'subforums_detail' subforum.id %}">
-            <div class="card mb-3">
-                <div class="card-body forum-card">
-                    <h5 class="card-title">{{ subforum.title }}</h5>
-                    <p class="card-text">{{ subforum.date }}</p>
-                    <p class="card-text">{{ subforum.likes }}</p>
-                </div>
-            </div>
-        </a>
-    {% endif %}
-{% endfor %}
+
 
 {% block script %}
 
