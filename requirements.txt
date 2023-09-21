@@ -1,5 +1,4 @@
 asgiref==3.7.2
-backports.zoneinfo==0.2.1
 boto3==1.28.50
 botocore==1.31.50
 dj-database-url==2.1.0
