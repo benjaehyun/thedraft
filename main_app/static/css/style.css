@@ -3,6 +3,9 @@
     background-color: rgba(47, 79, 79, 0.71);
 }
 
+html {
+    position: relative;
+}
 
 h1 {
     font-size: 3.5vw; 
@@ -23,15 +26,14 @@ p {
 }
 
 .comment-container {
-    margin-top: 10px; /* Add margin to separate comment containers */
+    margin-top: 10px; 
 }
-
 .comment {
-    background-color: #f5f5f5; /* Set a background color */
-    padding: 10px; /* Add padding for spacing */
-    border: 1px solid #060606; /* Add a border for separation */
-    border-radius: 5px; /* Add rounded corners for a container effect */
-    margin-top: 10px; /* Add margin to separate comments */
+    background-color: #f5f5f5; 
+    padding: 10px; 
+    border: 1px solid #060606; 
+    border-radius: 5px; 
+    margin-top: 10px; 
 }
 
 .btn-add {
@@ -74,7 +76,7 @@ h2 {
     height: 20%;
     padding: 10px; /* Add some padding to the content box */
     margin: 10px;
-    border: 1px solid #000; /* Add a black border with 1px width */
+    border: 1px solid #000; 
 }
 
 body {
@@ -174,10 +176,9 @@ body {
     margin-top: 5vw;
     text-align: center;
     font-size: 1.75vw; 
-    bottom: 0;
     width: 100%;
     border-top: 1px solid #555;
-    position: fixed;
+    position: absolute;
 }
 
 .signup {
