@@ -32,7 +32,8 @@
                 <h5 class="card-title">{{ subforum.title }}</h5>
                 {% endif %} 
             </div>
-            <p class="card-text">{{ subforum.date }}</p>
+            <p class="card-text">By: {{ subforum.user }}</p>
+            <p class="card-text">On: {{ subforum.date }}</p>
             <p class="card-text">Likes: {{ subforum.subforum_likes_set.all | length }}</p>
         </div>
     </a>
