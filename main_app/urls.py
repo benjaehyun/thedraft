@@ -40,4 +40,5 @@ urlpatterns = [
     path('profile/<int:user_id>/application/<int:application_id>/component/<int:component_id>/note/<int:pk>/delete/', views.Component_NoteDelete.as_view(), name='delete_note'),
     path('profile/<int:user_id>/liked/', views.liked, name='liked'),
   	path('accounts/signup/', views.signup, name='signup'), 
+	path('faq/', views.faq, name='faq')
 ]
