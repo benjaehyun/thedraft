@@ -10,6 +10,26 @@ Our goals are to foster discussion, creativity, and community through this this 
 
 ## Screenshots
 
+<div style="display:flex; margin: 5vmin auto; justify-content:center;">
+<img src="main_app/static/images/screenshot/1.png"  alt ="showing user's decks" width ="%" style="margin-right:1vmin"> 
+</div>
+
+<div style="display:flex; margin: 5vmin auto; justify-content:center;">
+<img src="main_app/static/images/screenshot/2.png" alt="show page for individual deck" width="%" style="margin-right:1vmin" >
+</div>
+
+<div style="display:flex; margin: 5vmin auto; justify-content:center;">
+<img src="main_app/static/images/screenshot/3.png"  alt="showing individual card" width="%">
+</div>
+
+<div style="display:flex; margin: 5vmin auto; justify-content:center;">
+<img src="main_app/static/images/screenshot/4.png"  alt="showing individual card" width="%">
+</div>
+
+</br>
+</br>
+</br>
+
 ## Technologies Used
 - Python
 - JavaScript
@@ -19,6 +39,7 @@ Our goals are to foster discussion, creativity, and community through this this 
 - Bootstrap
 - AWS
 - Heroku
+- PDF.js
 
 ## Getting started
 Click [here](https://thedraft-theebuggers-823b566ea1e8.herokuapp.com/) to access The Draft app
