@@ -4,12 +4,10 @@
 <h1> General Subforums like by: {{ user.username }} </h1>
 {% for like in user.subforum_likes_set.all %}
   <a href="{% url 'subforums_detail' like.subforum.id %}">
-      <div class="card mb-3">
-          <div class="card-body forum-card">
-              <h5 class="card-title">{{ like.subforum.title }}</h5>
-              <p class="card-text">{{ like.subforum.date }}</p>
-              <p class="card-text">{{ like.subforum.likes }}</p>
-          </div>
+      <div class="card mb-3 p-4" style="border-radius: 0.5em;">
+        <h5 class="card-title">{{ like.subforum.title }}</h5>
+        <p class="card-text">{{ like.subforum.date }}</p>
+        <p class="card-text">Like: {{ subforum.subforum_likes_set.all | length }}</p>
       </div>
   </a>
 {% endfor %}
@@ -17,13 +15,11 @@
 <h1> Company Subforums like by: {{ user.username }} </h1>
 {% for like in user.company_subforum_likes_set.all %}
   <a href="{% url 'company_subforums_detail' like.subforum.company.id like.subforum.id %}">
-      <div class="card mb-3">
-          <div class="card-body forum-card">
-              <h5 class="card-title">{{ like.subforum.title }}</h5>
-              <p class="card-text">{{ like.subforum.date }}</p>
-              <p class="card-text">{{ like.subforum.likes }}</p>
-          </div>
-      </div>
+    <div class="card mb-3 p-4" style="border-radius: 0.5em;">
+        <h5 class="card-title">{{ like.subforum.title }}</h5>
+        <p class="card-text">{{ like.subforum.date }}</p>
+        <p class="card-text">Like: {{ subforum.subforum_likes_set.all | length }}</p>
+    </div>
   </a>
 {% endfor %}
 

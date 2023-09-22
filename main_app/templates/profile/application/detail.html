@@ -2,102 +2,101 @@
 {% block content %}
 {% load static %}
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col">
-            <h1>{{ application.company }}</h1>
-            <h3>Status: {{ application.get_status_display }}</h3>
-            <h4>Role: {{ application.role }}</h4>
-            <a href="{{ application.url }}" target="_blank" rel="noopener noreferrer"> Link to Job Posting</a>
-            <p> Salary: {{ application.salary }} </p>
-            <p> Date: {{ application.date }} </p>
-            <p> Location: {{ application.location }} </p>
-            <p> {{ application.description }} </p>
-            <a href=" {% url 'applications_update' user.id application.id %} ">
-                <button class="btn btn-primary btn-lg">Update This Application</button>
-            </a>
-            {% if user == application.user %}
-                <form action=" {% url 'status_update' user.id application.id %} " method="POST">
-                    {% csrf_token %}
-                    {{ status_form.as_p }}
-                    <input type="submit" class="btn" value="Update Status">
-                </form>
-            {% endif %}
-            <div id="viewer">
-                <button id="prev">Previous</button>
-                <button id="next">Next</button>
-                <p>Page: <span id="page_num"></span> / <span id="page_count"></span></p>
-                <canvas id="pdf-canvas"></canvas>
-            </div>
-                    <!-- figure out the way that we're going to display the pdf -->
-            {% if user == application.user %}
-                <form action=" {% url 'applications_delete' user.id application.id %} ">
-                    {% csrf_token %}
-                    <input type="submit" class="btn" value="Delete Job Application">
-                </form>
-            {% endif %}
-            
+<div class="mb-3">
+    <h1>{{ application.company }}</h1>
+    <h3>Status: {{ application.get_status_display }}</h3>
+    <h4>Role: {{ application.role }}</h4>
+    <p> Salary: {{ application.salary }} </p>
+    <p> Date: {{ application.date }} </p>
+    <p> Location: {{ application.location }} </p>
+    <p> {{ application.description }} </p>
+    <a href="{{ application.url }}" class="mb-2 btn btn-add" target="_blank" rel="noopener noreferrer"> Link to Job Posting</a>
+    <br>
+    <a href=" {% url 'applications_update' user.id application.id %} ">
+        <button class="btn-add my-2 mb-4">Update This Application</button>
+    </a>
+    {% if user == application.user %}
+        <form action=" {% url 'status_update' user.id application.id %} " method="POST">
+            {% csrf_token %}
+            {{ status_form.as_p }}
+            <input type="submit" class="btn btn-primary mt-2 mb-4" value="Update Status">
+        </form>
+    {% endif %}
+
+    <p class="d-inline-flex gap-1">
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" id="expand-btn">
+            Expand PDF
+        </button>
+    </p>
+    <div class="collapse" id="collapseExample">
+        <div id="viewer">
+            <button class="btn btn-add" id="prev">Previous</button>
+            <button class="btn btn-add mx-4" id="next">Next</button>
+            <p>Page: <span id="page_num"></span> / <span id="page_count"></span></p>
+            <canvas id="pdf-canvas"></canvas>
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col">
-            <!-- the a tag for creating application component -->
-            {% for component in application.application_component_set.all %}
-            <!-- stopping point -->
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title"> Component: {{ component.type }} </h5>
-                    <small>Date: {{ component.date }}</small>
-                    <small>Contact(s): {{ component.contact }}</small>
-                    <p>Description: {{ component.description }}</p>
-                    {% if user == component.user %}
-                        <form action=" {% url 'delete_component' user.id application.id component.id %} ">
-                            {% csrf_token %}
-                            <input type="submit" class="btn" value="Delete Component">
-                        </form>
-                    {% endif %}
-
-                </div>
-                <div class="card-content">
-                    {% for note in component.component_note_set.all %}
-                        <p>Note: {{ note.content }} </p>
-                        <small> Created On: {{ note.date }} </small>
-                        {% if user == note.user %}
-                            <form action=" {% url 'delete_note' user.id application.id component.id note.id %} ">
-                                {% csrf_token %}
-                                <input type="submit" class="btn" value="Delete Note">
-                            </form>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                <div>
-                    {% if user.is_authenticated %}
-                        <form action=" {% url 'add_note' user.id application.id component.id %} " method="POST">
-                            {% csrf_token %}
-                            {{ note_form.as_p }}
-                            <input type="submit" class="btn" value="Add A Note">
-                        </form>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col">
-            <h2>Add a Component</h2>
-            {% if user.is_authenticated %}
-                <form action="{% url 'add_component' user.id application.id %}" method="POST">
-                    {% csrf_token %}
-                    {{ component_form.as_p }}
-                    <button type="submit" class="btn btn-primary">Add Component</button>
-                </form>
-            {% endif %}
-        </div>
-    </div>
+            <!-- figure out the way that we're going to display the pdf -->
+    {% if user == application.user %}
+        <form action=" {% url 'applications_delete' user.id application.id %} ">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-delete" value="Delete Job Application">
+        </form>
+    {% endif %}
 </div>
+
+<div class="row px-2 py-2 my-2" id="post-body">
+    {% for component in application.application_component_set.all %}
+        <div class="card py-2">
+            <h5 class="card-title"> Component: {{ component.type }} </h5>
+            <small>Date: {{ component.date }}</small>
+            <small>Contact(s): {{ component.contact }}</small>
+            <p>Description: {{ component.description }}</p>
+            {% if user == component.user %}
+                <form action=" {% url 'delete_component' user.id application.id component.id %} ">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-delete" value="Delete Component">
+                </form>
+            {% endif %}
+        </div>
+        <div class="comment-container py-2">
+            {% for note in component.component_note_set.all %}
+                <div class="comment my-2 p-2">
+                    <p>Note: {{ note.content }} </p>
+                    <small> Created On: {{ note.date }} </small>
+                    {% if user == note.user %}
+                    <form action=" {% url 'delete_note' user.id application.id component.id note.id %} ">
+                        {% csrf_token %}
+                        <input type="submit" class="btn-delete" value="Delete Note">
+                    </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            {% if user.is_authenticated %}
+                <form action=" {% url 'add_note' user.id application.id component.id %} " method="POST">
+                    {% csrf_token %}
+                    {{ note_form.as_p }}
+                    <input type="submit" class="btn btn-add" value="Add A Note">
+                </form>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+<div class="row mt-4">
+    <h2>Add a Component</h2>
+    {% if user.is_authenticated %}
+        <form action="{% url 'add_component' user.id application.id %}" method="POST">
+            {% csrf_token %}
+            <table id="component-form">
+                {{ component_form.as_table }}
+            </table>
+            <button type="submit" class="btn btn-primary">Add Component</button>
+        </form>
+    {% endif %}
+</div>
+
 
 {% block script %}
 
@@ -159,6 +158,13 @@
         pageNumber++;
         renderPage(pageNumber);
     });
+
+    const expand = document.querySelector('#expand-btn')
+    expand.addEventListener('click', changeText)
+
+    function changeText(event) {
+        expand.innerText = expand.innerText === "Collapse PDF" ? "Expand PDF": "Collapse PDF"
+    }
 
 </script>
 
