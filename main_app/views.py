@@ -531,3 +531,6 @@ def liked(request, user_id):
     return render(request, 'profile/liked.html', {
         'user': user
     }  )
+
+def faq(request): 
+    return render(request, 'faq.html')
