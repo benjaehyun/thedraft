@@ -66,7 +66,7 @@ class Photo(models.Model):
     
 
     def __str__(self):
-        return f'Photo for post_id: {self.post_id} @{self.url}'
+        return f'photo id: {self.id} @{self.url}'
 
 
 
@@ -182,7 +182,7 @@ class Company_Photo(models.Model):
     )
 
     def __str__(self):
-        return f'Photo for post_id: {self.post_id} @{self.url}'
+        return f'Photo id: {self.id} @{self.url}'
     
 class Job_Application(models.Model): 
     
