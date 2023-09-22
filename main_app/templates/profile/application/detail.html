@@ -10,10 +10,10 @@
     <p> Date: {{ application.date }} </p>
     <p> Location: {{ application.location }} </p>
     <p> {{ application.description }} </p>
-    <a href="{{ application.url }}" class="mb-2 btn btn-add" target="_blank" rel="noopener noreferrer"> Link to Job Posting</a>
+    <a href="{{ application.url }}" class="mb-2 btn btn-primary" target="_blank" rel="noopener noreferrer"> Link to Job Posting</a>
     <br>
     <a href=" {% url 'applications_update' user.id application.id %} ">
-        <button class="btn-add my-2 mb-4">Update This Application</button>
+        <button class="btn btn-primary my-2 mb-4">Update This Application</button>
     </a>
     {% if user == application.user %}
         <form action=" {% url 'status_update' user.id application.id %} " method="POST">
@@ -68,7 +68,7 @@
                     {% if user == note.user %}
                     <form action=" {% url 'delete_note' user.id application.id component.id note.id %} ">
                         {% csrf_token %}
-                        <input type="submit" class="btn-delete" value="Delete Note">
+                        <input type="submit" class="btn btn-delete" value="Delete Note">
                     </form>
                     {% endif %}
                 </div>
@@ -76,7 +76,9 @@
             {% if user.is_authenticated %}
                 <form action=" {% url 'add_note' user.id application.id component.id %} " method="POST">
                     {% csrf_token %}
-                    {{ note_form.as_p }}
+                    <table>
+                        {{ note_form.as_table }}
+                    </table>
                     <input type="submit" class="btn btn-add" value="Add A Note">
                 </form>
             {% endif %}

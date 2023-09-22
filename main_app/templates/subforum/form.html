@@ -4,8 +4,10 @@
   <h1>Add Subforum</h1>
   <form action=" {% url 'subforums_create' %} " enctype="multipart/form-data" method="POST">
     {% csrf_token %}
-    {{ subforum_form.as_p }}
-    <input type="file" name="photo-file" multiple>
+    <table>
+      {{ subforum_form.as_table }}
+    </table>
+    <strong>Add Images to Your Post:</strong> <input type="file" name="photo-file" multiple>
     <button type="submit" class="btn btn-primary">Add Subforum</button>
   </form>
 {% endblock %}

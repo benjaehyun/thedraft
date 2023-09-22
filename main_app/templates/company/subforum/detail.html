@@ -9,9 +9,9 @@
         <form class="like-button-form" method="POST">
             {% csrf_token %}
             {% if is_liked %}
-                <button class="like-button" style="background-color: red; padding: 0;"><img src=" {% static 'images/heart.png' %} " alt="" height="50rem"></button>
+                <i class="fa-solid fa-heart fa-2xl like-button" style="color: red; font-size: 8vmin; text-shadow: 3px 3px 5px rgba(0,0,0,0.77);"></i>
             {% else %}
-                <button class="like-button" style="background-color: white; padding: 0;" ><img src=" {% static 'images/heart.png' %} " alt="" height="50rem"></button>
+                <i class="fa-solid fa-heart fa-2xl like-button" style="color: white; font-size: 8vmin; text-shadow: 3px 3px 5px rgba(0,0,0,0.77);"></i>
             {% endif %}
         </form>
     </div>
@@ -21,12 +21,30 @@
     <br>
     <p> {{ subforum.content }} </p>
     <a href=" {% url 'company_detail' subforum.company.id %} "> {{ subforum.company }} </a>
-    <br>
-    {% for photo in subforum.company_photo_set.all %}
-        <img src=" {{ photo.url }} " alt="">
-    {% empty %}
-    <div>No Photos Uploaded</div>
-    {% endfor %}
+    {% if subforum.company_photo_set.all %}
+        <br>
+        <div id="carouselExample" class="carousel slide mx-auto" style="width: 40vmax; height: 80vmin;">
+            <div class="carousel-inner">
+            {% for photo in subforum.company_photo_set.all %}
+                <div class="carousel-item active">
+                    <img src=" {{ photo.url }} " class="d-block w-100 mb-4" style="max-width: 40vmax;">
+                </div>
+            {% empty %}
+                <div>No Photos Uploaded</div>
+            {% endfor %}
+                </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    {% endif %}
+
+
     {% if user == subforum.user %}
         <form  class="my-2" action=" {% url 'company_subforums_update' subforum.company.id subforum.id %} ">
             {% csrf_token %}
@@ -34,13 +52,17 @@
         </form>
     {% endif %}
 </div>
+<p class="d-inline-flex gap-1 mb-2">
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" id="expand-btn">
+        Expand Comments
+    </button>
+</p>
 
 <div class="row px-2 py-2 my-2" id="post-body">
     {% for post in subforum.company_post_set.all %}
-        <div class="card py-3">
+        <div class="card py-2 my-2">
             <h5 class="card-title">Post by User {{ post.user }} </h5>
             <small>Created: {{ post.date }}</small>
-            <small>Likes: {{ post.likes }}</small>
             <p>{{ post.content }}</p>
             {% if user == post.user %}
                 <form action=" {% url 'delete_company_post' subforum.company.id subforum.id post.id %} ">
@@ -49,28 +71,34 @@
                 </form>
             {% endif %}  
         </div>
-        <div class="comment-container py-2">
-            {% for comment in post.company_comment_set.all %}
-            <div class="comment my-2 p-2">
-                <p> {{ comment.user }} Commented: <br>
-                    <small> {{ comment.date }} </small> 
-                    {{ comment.content }} </p>
-                {% if user == comment.user %}
-                <form action=" {% url 'delete_company_comment' subforum.company.id subforum.id post.id comment.id %} ">
-                    {% csrf_token %}
-                    <input type="submit" class="btn-delete" value="Delete Comment">
-                </form>
+        <div class="collapse" id="collapseExample">
+            <div class="comment-container">
+                {% for comment in post.company_comment_set.all %}
+                <div class="comment mb-2 p-2">
+                    <p> {{ comment.user }} Commented: <br>
+                        <small> {{ comment.date }} </small> <br>
+                        {{ comment.content }} </p>
+                    {% if user == comment.user %}
+                    <form action=" {% url 'delete_company_comment' subforum.company.id subforum.id post.id comment.id %} ">
+                        {% csrf_token %}
+                        <input type="submit" class="btn-delete" value="Delete Comment">
+                    </form>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% if user.is_authenticated %}
+                    <form class="mb-2" action=" {% url 'add_company_comment' post.subforum.company.id subforum.id post.id %} " method="POST">
+                        {% csrf_token %}
+                        {{ comment_form.as_p }}
+                        <input type="submit" class="btn-add" value="Add A Comment">
+                    </form>
                 {% endif %}
             </div>
-            {% endfor %}
-            {% if user.is_authenticated %}
-                <form class="mt-4 mb-2" action=" {% url 'add_company_comment' post.subforum.company.id subforum.id post.id %} " method="POST">
-                    {% csrf_token %}
-                    {{ comment_form.as_p }}
-                    <input type="submit" class="btn-add" value="Add A Comment">
-                </form>
-            {% endif %}
         </div>
+
+
+
+
     {% endfor %}
 </div>
 
@@ -86,11 +114,10 @@
 </div>
 
 
-
 {% block scripts %}
 <script>
     $(document).ready(function() {
-        $('.like-button-form').submit(function(event) {
+        $('.like-button-form').click(function(event) {
             event.preventDefault();
             let form =$(this)
             let button = document.querySelector('.like-button')
@@ -103,7 +130,7 @@
                 success: function(data) {
                     if (data.success) {
                         likes.innerText = data.likes
-                        data.is_liked ? button.style.backgroundColor = 'red' : button.style.backgroundColor = 'white'
+                        data.is_liked ? button.style.color = 'red' : button.style.color = 'white'
                         console.log(`success!, likes: ${data.likes} `)
                     } else {
                         alert('failed to add a like to the subforum')
@@ -115,6 +142,18 @@
             })
         } )
     } )
+
+    const expand = document.querySelector('#expand-btn')
+    expand.addEventListener('click', changeText)
+
+    function changeText(event) {
+        expand.innerText = expand.innerText === "Collapse Comments" ? "Expand Comments": "Collapse Comments"
+    }
+
+    $(document).ready(function() {
+        $("#id_date").datepicker({format:"yyyy-mm-dd"})
+    })
+
 </script>
 
 {% endblock %}
