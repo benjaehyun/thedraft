@@ -7,7 +7,14 @@
     <table>
       {{ form.as_table }}
     </table>
-    <input type="submit" value="Submit!" class="btn">
+    <input type="submit" value="Submit!" class="btn btn-primary">
   </form>
 
+{% block script %}
+<script>
+  $(document).ready(function() {
+          $("#id_date").datepicker({format:"yyyy-mm-dd"})
+      })
+</script>  
+{% endblock %}
 {% endblock %}

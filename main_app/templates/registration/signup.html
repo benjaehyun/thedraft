@@ -8,8 +8,10 @@
 <!-- Add the login form -->
 <form method="POST" action="{% url 'signup' %}">
   {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn-primary">Log In</button>
+  <table>
+    {{ form.as_table }}
+  </table>
+  <button type="submit" class="btn btn-primary">Log In</button>
 </form>
 
 {% endblock %}

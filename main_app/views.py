@@ -534,3 +534,6 @@ def liked(request, user_id):
 
 def faq(request): 
     return render(request, 'faq.html')
+
+def help(request): 
+    return render(request, 'help.html')

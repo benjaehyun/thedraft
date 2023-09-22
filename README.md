@@ -24,7 +24,7 @@ Our goals are to foster discussion, creativity, and community through this this 
 Click [here](https://thedraft-theebuggers-823b566ea1e8.herokuapp.com/) to access The Draft app
 
 ## Next Step
-There are many different features I think our entire team would love to implement. Having full CRUD on all of our data entities jumps to mind. Search querries is another feature we would love to have despite the challenges of searching across many data entities. Another feature that would be great to implement is the ability to hyperlink text sent by users in content boxes. 
+There are many different features I think our entire team would love to implement. Having full CRUD on all of our data entities jumps to mind. Search queries is another feature we would love to have despite the challenges of searching across many data entities. Another feature that would be great to implement is the ability to hyperlink text sent by users in content boxes. Also, pagination is something that would not only improve user quality of life but also general usability of our app.  
 
 
 

@@ -7,8 +7,10 @@
 
   <form action="" method="POST">
     {% csrf_token %}
-    <input type="submit" value="Yes - Delete!" class="btn btn-primary">
-    <a href="{% url 'company_subforums_detail' object.post.subforum.company.id object.post.subforum.id %}">Cancel</a>
+    <button type="submit" class="btn btn-danger">Delete!</button>
+    <a href="{% url 'company_subforums_detail' object.post.subforum.company.id object.post.subforum.id %}">
+      <button type="button" class="btn btn-secondary">Cancel</button>
+    </a>
   </form>
 {% endblock %}
 

@@ -1,10 +1,14 @@
 .container {
     padding: 2vw;
-    background-color: rgba(47, 79, 79, 0.71);
+    background-color: rgba(168, 208, 230, 0.71);
 }
 
 html {
     position: relative;
+}
+
+body{
+   background-color: rgba(168, 208, 230, 0.71);
 }
 
 h1 {
@@ -70,19 +74,29 @@ body {
     font-style: normal;
 }
 .about-us {
-    background-image: url('https://i.imgur.com/4GoS94r.jpg');
+    background: url('/static/images/about.png') no-repeat;
     background-color: rgba(255, 255, 255, .8);
-    background-repeat: no-repeat; 
-    background-size: cover; 
-    background-position: center;
+    background-position-y: 50%;
+    margin: auto;
+    width: 90vmax;
+    margin-top: 3vh;
+    background-size: cover;
+    display: flex;
 }
-.about-us>h2 {
+
+#about-us-text{
+    width: 100%;
+    padding: 10rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    line-height: 1.5rem;
+}
+#about-us-text>h2 {
     margin-right: 5vw;
     font-weight: bold;
     color: white;
 }
 
-.about-us>p {
+#about-us-text>p {
 
     font-family: "transducer-variable", sans-serif;
     font-variation-settings: "slnt" 0, "wdth" 100, "wght" 100;
@@ -97,7 +111,7 @@ body {
 }
 
 #post-body {
-    background-color: #A8D0E6;
+    background-color: #3747855c;
     border-radius: 0.5rem;
 }
 
@@ -198,18 +212,6 @@ p>label{
 
 
 
-.page-footer {
-    background-color: #A8D0E6;
-    color: #ffffff;
-    padding: 2vw; 
-    text-align: center;
-    font-size: 1.75vw; 
-    width: 100%;
-    border-top: 1px solid #555;
-    position: absolute;
-}
-
-
 .signup {
     background-color: #FFD700; 
     color: #fff; 
@@ -242,3 +244,4 @@ p>label{
         @include transition($transition-collapse-width);
     }
 }
+
