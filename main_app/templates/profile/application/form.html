@@ -9,5 +9,16 @@
     <button type="submit" class="btn btn-primary">Add Application</button>
   </form>
 
+{% block script %}
+<script>
+
+$(document).ready(function() {
+        $("#id_date").datepicker({format:"yyyy-mm-dd"})
+    })
+    
+</script>  
+
+
+{% endblock %}
 {% endblock %}
 
