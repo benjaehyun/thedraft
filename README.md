@@ -1,57 +1,30 @@
-job tracker ideas/notes: 
-    can let user set a goal of how many jobs or leetcode questions that they completed and have this tracked 
-        -reference sec 12: bonus challenge on the Django One-to-Many Models & ModelForms lesson 
-            + rather than checking against the length of the choices tuple just check against some daily goal that the user can set (store in random variable) 
+# The Draft
 
-search query 
-    allow for users to perform a search on a website for keywords included in post content/title/tags and subforum title(or topic)/tags 
-    this functionality will probably be inclusive of allowing users to filter by tags
-        -for instance if we wanted to allow users to be able to click on a tag and see all related posts/subforums 
+The Draft, created by developers Nadew Demissew, Ben Lee, and Jonathan Do, is a discussion forum connecting job-seekers and industry experts together to share knowledge, experiences, and insights with one another. The app can be considered analogous to the site CollegeConfidential.com as users generate discussion that helps everyone navigate the often complex and challenging world of job hunting. The app contains two major components that will hopefully give users the confidence and knowledge needed to succceed in their job search as well as the tools needed to stay organized throughout that process.
 
-thread organization 
-    have some sort of pinning or sticky subforums when it's rendered on an index page
+The first major component to The Draft app is the subforums feature, which is how users submit topics, questions, or any other kind of interesting content for other users to engage with. Subforms fall into two catergories: General subforums and Company subforums. General subforums are how users can submit content for discussion that is regarding a general topic of conversation relating to job-seeking. Alternatively, Company subforums are how users submit content related to job-searching or interesting info regarding a specific company. To access a Company's subforums, a user can click the "View Companies" tab on the nav bar and pick the specific company their interested in.
 
-subforum organization icebox 
-    adding ux features like most recent activities/modified 
+The second major component to The Draft App is it's job application tracker, which lives on the user's profile. The Job Application Tracker feature is designed to help users track a particular application cycle and provides a pdf viewer to show them what resume and/or cover letter was used, a status field that can be update to reflect where they currently are in the cycle, and additional data like application components and notes to help the user provided extra context and action items as needed. 
 
-icebox 
-    view subforums that a user has liked 
+Our goals are to foster discussion, creativity, and community through this this and welcome all users to The Draft. Together, we'll make your job search more manageable, more successful, and even more enjoyable!
 
-user roles/permissions 
-    image form 
-    pagination
-    likes ajax call
-    edited tag on subforums 
+## Screenshots
 
-in order 
-    job tracker
-    pagination 
-    styling 
+## Technologies Used
+- Python
+- JavaScript
+- HTML
+- CSS
+- Django
+- Bootstrap
+- AWS
+- Heroku
 
-if we implement post and comment edit 
-    then maybe add another attribute on the related models that is a bool 
-    then print on the screen as to whether or not its been edited 
-    set a one off default for False for all preexisting rows 
-    if we want to add a modified date, look back into the docs for the last modified date 
-        create another attribute that stores and prints the last modified date IF that bool is True 
+## Getting started
+Click [here](https://thedraft-theebuggers-823b566ea1e8.herokuapp.com/) to access The Draft app
 
-styling: 
-    homepage 
-        short 'about me' describing the web app with a couple of fonts/weights to draw the eyes down to a sign up button 
-        have an overall color scheme that matches the vibes of your website 
-        create some small graphics that would be reflective of how your site is used like on quizlet. maybe just some forum-type of clip art that you can throw on the homepage 
-        restructure the navbar so that the links are grouped according to usage. ie login/signup on the right 
-        *favicon 
-
-job tracker notes 
-    create a new job tracker model 
-    create a new pdf storing model 
-    create a component model for the job tracker 
-        code it very similarly to posts in a subforum 
-        can use ajax calls again to toggle that boolean completed field that we were talking about 
-    figure out the pdf viewer 
-    can use the same code for photo storage 
-    need to figure out a way to limit the file type for both the photos models and pdfs 
+## Next Step
+There are many different features I think our entire team would love to implement. Having full CRUD on all of our data entities jumps to mind. Search querries is another feature we would love to have despite the challenges of searching across many data entities. Another feature that would be great to implement is the ability to hyperlink text sent by users in content boxes. 
 
 
-2067
+
