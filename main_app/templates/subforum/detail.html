@@ -4,32 +4,48 @@
 {% load static %}
 
 
-<div class="">
+<div class="mb-3">
     <h1>{{ subforum.title }}</h1>
+    <div style="display: flex; justify-content: end;">
+        <form class="like-button-form" method="POST">
+            {% csrf_token %}
+            {% if is_liked %}
+                <i class="fa-solid fa-heart fa-2xl like-button" style="color: red; font-size: 8vmin; text-shadow: 3px 3px 5px rgba(0,0,0,0.77);"></i>
+            {% else %}
+                <i class="fa-solid fa-heart fa-2xl like-button" style="color: white; font-size: 8vmin; text-shadow: 3px 3px 5px rgba(0,0,0,0.77);"></i>
+            {% endif %}
+        </form>
+    </div>
+    <small>By: {{ subforum.user }}</small><br>
     <small>Created: {{ subforum.date }}</small><br>
     <small>Likes: <span id="likes"> {{ likes }} </span> </small> 
     <p> {{ subforum.content }} </p>
+    <div id="carouselExample" class="carousel slide mx-auto" style="width: 40vmax; height: 80vmin;">
+        <div class="carousel-inner">
     {% for photo in subforum.photo_set.all %}
-        <img src=" {{ photo.url }} " alt="">
+    <div class="carousel-item active">
+        <img src=" {{ photo.url }} " class="d-block w-100 mb-4" style="max-width: 40vmax;">
+    </div>
     {% empty %}
         <div>No Photos Uploaded</div>
     {% endfor %}
+        </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+    
     {% if user == subforum.user %}
         <form class="my-2" action=" {% url 'subforums_update' subforum.id %} ">
             {% csrf_token %}
             <input type="submit" class="btn btn-primary" value="Edit Subforum">
         </form>
     {% endif %}
-    <div>
-        <form class="like-button-form" method="POST">
-            {% csrf_token %}
-            {% if is_liked %}
-                <button class="like-button" style="background-color: red; padding: 0;"><img src=" {% static 'images/heart.png' %} " alt="" height="50rem"></button>
-            {% else %}
-                <button class="like-button" style="background-color: white; padding: 0;" ><img src=" {% static 'images/heart.png' %} " alt="" height="50rem"></button>
-            {% endif %}
-        </form>
-    </div>
 </div>
 
 <div class="row px-2 py-2 my-2" id="post-body">
@@ -50,7 +66,7 @@
             {% for comment in post.comment_set.all %}
                 <div class="comment my-2 p-2">
                     <p > {{ comment.user }} Commented:<br>
-                        {{ comment.date }} <br>
+                       <small> {{ comment.date }} </small><br>
                         {{ comment.content }} </p>
                     {% if user == comment.user %}
                         <form action=" {% url 'delete_comment' subforum.id post.id comment.id %} ">
@@ -72,7 +88,6 @@
 </div>
 
 <div class="row mt-4">
-
     <h2>Add a Post</h2>
     {% if user.is_authenticated %}
         <form action="{% url 'add_post' subforum.id %}" method="POST">
@@ -88,7 +103,7 @@
 {% block scripts %}
 <script>
     $(document).ready(function() {
-        $('.like-button-form').submit(function(event) {
+        $('.like-button-form').click(function(event) {
             event.preventDefault();
             let form =$(this)
             let button = document.querySelector('.like-button')
@@ -101,7 +116,7 @@
                 success: function(data) {
                     if (data.success) {
                         likes.innerText = data.likes
-                        data.is_liked ? button.style.backgroundColor = 'red' : button.style.backgroundColor = 'white'
+                        data.is_liked ? button.style.color = 'red' : button.style.color = 'white'
                         console.log(`success!, likes: ${data.likes} `)
                     } else {
                         alert('failed to add a like to the subforum')

@@ -1,29 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1> {{ user.username }} </h1>
-{% if user.is_authenticated %}
+<h1 style="text-align: center;"> {{ user.username }} </h1>
+<div style="display: flex; justify-content: end;">
+    {% if user.is_authenticated %}
     <a href="{% url 'applications_new' user.id %}">
-        <button class="btn btn-primary btn-lg">Add a Job Application</button>
+        <button class="btn-add m-2 mb-0" style="border-radius: 0.5em;">Add a Job Application</button>
     </a>
-{% endif %}
-{% if user.is_authenticated %}
-    <a href="{% url 'liked' user.id %}">
-        <button class="btn btn-primary btn-lg">Subforums that I've Liked</button>
-    </a>
-{% endif %}
+    {% endif %}
+</div>
 
 {% for application in applications %}
     <a href="{% url 'applications_detail' user.id application.id %}">
-        <div class="card mb-3">
-            <div class="card-body">
-                <span class="card-title"> {{ application.company }} </span>
-                <p> {{ application.get_status_display }} </p>
-                <p> {{ application.role }} </p>
-                <p> {{ application.salary }} </p>
-                <p> {{ application.location }} </p>
-                <p> {{ application.date }} </p>
-            </div>
+        <div class="card mx-2 my-4 p-4" style="border-radius: 0.5em;">
+            <span class="card-title"> {{ application.company }} </span>
+            <p> {{ application.get_status_display }} </p>
+            <p> {{ application.role }} </p>
+            <p> {{ application.salary }} </p>
+            <p> {{ application.location }} </p>
+            <p> {{ application.date }} </p>
         </div>
     </a>
 {% endfor %}
